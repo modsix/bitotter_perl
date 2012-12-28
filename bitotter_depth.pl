@@ -41,7 +41,7 @@ use LWP::UserAgent;
 use LWP::Simple qw(get);
 use JSON;
 
-my $url = "http://polimedia.us/bitcoin/mpex-mktdepth.php";
+my $url = "http://mpex.co/mpex-mktdepth.php";
 my $json = new JSON;
 my $json_text;
 my $mpsic;

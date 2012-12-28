@@ -41,7 +41,7 @@ use JSON;
 use LWP::UserAgent; 
 use LWP::Simple qw(get);
  
-my $url = "http://polimedia.us/bitcoin/mpex-vwap.php";
+my $url = "http://mpex.co/mpex-vwap.php";
 my $json = new JSON;
 my $json_text;
 my $mpsic;

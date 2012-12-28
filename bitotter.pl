@@ -54,9 +54,9 @@ die $GPG->error() if $GPG->error();
 
 print "..::[ BitOTTer (for UNIX) ]::..\n";   
 if(!$ARGV[0] && !$ARGV[1]) {
-	print "Usage: ./bitotter.pl \"MPEX COMMAND\" [usetor] \n";
+	print "Usage: ./bitotter.pl \"MPEx COMMAND\" [usetor] \n";
         print "   ex: ./bitotter.pl \"STAT\" [usetor] \n";
-	print "Review this FAQ for all commands you can issue: http://polimedia.us/bitcoin/faq.html\n";
+	print "Review this FAQ for all commands you can issue: http://mpex.co/faq.html\n";
 } else {
 
 	checkForMPExKey();
@@ -76,8 +76,6 @@ if(!$ARGV[0] && !$ARGV[1]) {
 	
 	## Parse Response from MPEx
 	my $PGP_REPLY = parseResponse();
-	#print "$PGP_REPLY\n";  # Is set to everthing it should be in debugging
-	#print "$PASSPHRASE\n"; # Is set to everthing it should be in debugging
 
 	## Decrypt the reply from MPEx
 	$decrypted_order = $GPG->decrypt($PASSPHRASE, $PGP_REPLY) or die "$! Problem decrypting reply from MPEx!! Bad Passphrase? Try to decrypt $TMP_DIR/mpex_reply.txt by hand.\n";
@@ -106,8 +104,8 @@ sub checkForMPExKey {
 
 	if(!$mpex_key_found) { 
 		print "Error: MPEx Public Key: $MPEX_GPG_KEY_ID Not Found on Users Keyring. Please locate on gpg.mit.edu, import and try again.\n";
-		print "     : for more info check here: http://polimedia.us/bitcoin/faq.html#6\n";
-		print "     :                   & here: http://polimedia.us/bitcoin/faq.html#8\n";
+		print "     : for more info check here: http://mpex.co/faq.html#6\n";
+		print "     :                   & here: http://mpex.co/faq.html#8\n";
 		exit;
 	}
 }

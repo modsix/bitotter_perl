@@ -41,7 +41,7 @@ use LWP::UserAgent;
 use LWP::Simple qw(get);
 use XML::RSS;
 
-my $url = "http://polimedia.us/bitcoin/mpex-rss.php";
+my $url = "http://mpex.co/mpex-rss.php";
 my $rss = XML::RSS->new();
 my $rss_feed;
 my $mpex_trades;
