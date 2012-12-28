@@ -1,0 +1,234 @@
+#
+# Copyright (c) 2012
+# BITOTTER (http://www.bitotter.com) All rights reserved.
+#
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1. Redistributions of source code must retain the above copyright
+#    notice, this list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in the
+#    documentation and/or other materials provided with the distribution.
+# 3. All advertising materials mentioning features or use of this software
+#    must display the following acknowledgement:
+#       This product includes software developed by BITOTTER,
+#       http://www.bitotter.com
+# 4. Neither the name "BITOTTER" nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
+#    without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY BITOTTER ``AS IS'' AND
+# ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED.  IN NO EVENT SHALL BITOTTER OR CONTRIBUTORS BE
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+#
+
+# Copyright (c) 2012 bitotter.com <modsix@gmail.com> 0xD655A630A13E8C69
+
+
+BitOTTer Perl Tools: 
+
+BitOTTer (bitotter.pl) 
+BitOTTer Depth Tool for MPEx (bitotter_depth.pl) 
+BitOTTer Recent Trades Tool for MPEx (bitotter_trades.pl)
+BitOTTer VWAP Tool for MPEx [Volume Weighted Average Price] (bitotter_vwap.pl)
+
+####################################################
+NOTE: BitOTTer perl tools will look for localhost:9050 to use for a Tor Socket.
+      If you wish to try to run these tools with a Tor socket, make sure tor is 
+      setup to listen on localhost:9050
+
+      How do I set it up to use 9050?  This is how to do just that (taken from the TorFAQ): 
+      "In Vidalia, go to Settings->Advanced and uncheck the box that says 'Configure ControlPort automatically'. 
+      Your SOCKS port will then be on 9050."  This is taken from this page: https://trac.torproject.org/projects/tor/wiki/doc/TorFAQ#SOCKSAndDNS
+      And more good info for how to use Tor can be found here: https://www.torproject.org/docs/documentation.html.en
+
+      Not sure if Tor is actually listening on localhost:9050 ?? 
+      Try the following at your UNIX prompt:
+      `netstat -an | grep 9050`
+
+      If it is indeed listening you should see something like the following:  
+      tcp        0      0 127.0.0.1:9050          0.0.0.0:*               LISTEN  
+
+      If you wish to run these tools without using tor, simply just leave off
+      the 'usetor' flag and these BitOTTer perl tools will use a simple naked
+      connection to MPEx.  See the without tor example below.  Need help!?  
+      Find me on irc.freenode.net or send email to modsix at gmail dot com -- mod6 
+     
+####################################################
+
+REQUIRED LIBS per each of BitOTTer Perl Tools:  
+bitotter.pl:
+
+GPG --> http://search.cpan.org/~miles/GPG-0.06/GPG.pm  
+
+ATTENTION -- The GPG perl module will require a change before it will work
+properly with bitotter.pl.  As you can see below from the unified diff, one 
+simply has to remove the --quiet line from the module.
+Run a `find / -name "GPG.pm"` to find the file if needed.
+
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+[mod6@localhost:~]% cat GPG.pm.patch
+--- GPG.pm      2012-07-30 12:48:22.839132701 -0700
++++ GPG.pm.orig 2012-07-30 12:46:56.674621512 -0700
+@@ -25,7 +25,6 @@
+        $self->{'COMMAND'} .= " --batch";
+        $self->{'COMMAND'} .= " --no-comment";
+        $self->{'COMMAND'} .= " --no-version";
+-       $self->{'COMMAND'} .= " --quiet";
+        $self->{'COMMAND'} .= ' '; # so i dont forget the spaces later :-)
+
+       if ($self->{'debug'}) {
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
+LWP::UserAgent --> http://search.cpan.org/~gaas/libwww-perl-6.04/lib/LWP/UserAgent.pm
+Term::ReadKey  --> http://search.cpan.org/dist/TermReadKey/ReadKey.pm
+CGI            --> http://search.cpan.org/~markstos/CGI.pm-3.60/lib/CGI.pm
+
+bitotter_depth.pl:
+LWP::Protocol::socks --> http://search.cpan.org/~scr/LWP-Protocol-socks-1.6/lib/LWP/Protocol/socks4.pm
+LWP::UserAgent --> http://search.cpan.org/~gaas/libwww-perl-6.04/lib/LWP/UserAgent.pm
+LWP::Simple --> http://search.cpan.org/~gaas/libwww-perl-6.04/lib/LWP/Simple.pm
+JSON        --> http://search.cpan.org/~makamaka/JSON-2.53/lib/JSON.pm
+
+bitotter_trades.pl:
+LWP::Protocol::socks --> http://search.cpan.org/~scr/LWP-Protocol-socks-1.6/lib/LWP/Protocol/socks4.pm
+LWP::UserAgent --> http://search.cpan.org/~gaas/libwww-perl-6.04/lib/LWP/UserAgent.pm
+LWP::Simple --> http://search.cpan.org/~gaas/libwww-perl-6.04/lib/LWP/Simple.pm
+XML::RSS    --> http://search.cpan.org/~shlomif/XML-RSS-1.49/lib/XML/RSS.pm
+
+bitotter_vwap.pl:
+LWP::Protocol::socks --> http://search.cpan.org/~scr/LWP-Protocol-socks-1.6/lib/LWP/Protocol/socks4.pm
+LWP::UserAgent --> http://search.cpan.org/~gaas/libwww-perl-6.04/lib/LWP/UserAgent.pm
+LWP::Simple --> http://search.cpan.org/~gaas/libwww-perl-6.04/lib/LWP/Simple.pm
+JSON        --> http://search.cpan.org/~makamaka/JSON-2.53/lib/JSON.pm
+
+####################################################
+
+BitOTTer Trade Tool for MPEx:
+This perl tool will allow the user to send clearsigned/encrypted commands
+over Tor (or not) to MPEx to be executed.
+
+This tool makes some assumptions about the location of your local .gnupg
+directory, and a tmp directory that is needed.  Please reivew these
+variable settings in the bitotter.pl script:
+$PATH_TO_GPG_HOME = "~/.gnupg";  # This is the default
+$TMP_DIR = "/tmp";               # This is the default
+
+Please ensure that he MPEx public PGP key is imported to your GPG keyring 
+before running bitotter.pl.  If you do not have the MPEx key imported 
+to your keyring, bitotter.pl will take notice and exit accordingly. 
+
+[mod6@localhost:~]% ./bitotter.pl "STAT" usetor
+..::[ BitOTTer (for UNIX) ]::..
+MPEx Key Found: XXXXXXXXXXXX
+GPG Public Key username [email|name|keyid|org]:
+foo 
+Public Key Found: XXXXXXXXXXXX for user: foo (foo's Public Key) <foo@bar.com>
+Was this the correct public key id? [Y/N]:
+Y
+Enter GPG Passphrase [will not echo back to terminal]:
+TOR ENABLED - Connecting to MPEx via Tor Socket...
+DECRYPTED ORDER FROM MPEx:
+-----BEGIN PGP SIGNED MESSAGE-----
+... All the good stuff here ...
+-----END PGP SIGNED MESSAGE-----
+
+####################################################
+BitOTTer Depth Tool for MPEx -- WITHOUT TOR: 
+This tool will display bid/ask depth for all or per MPSIC
+
+ex: ./bitotter_depth S.MPOE
+Tor disabled - naked connection to MPEx in progress ...
+..::[ BitOTTer Market Depth for MPEx: S.MPOE ]::..
+S => Price: 100000      Volume: 10000
+S => Price: 41407       Volume: 40407
+S => Price: 41302       Volume: 46900
+S => Price: 41286       Volume: 57500
+B => Price: 32068       Volume: 27240
+B => Price: 31327       Volume: 18600
+B => Price: 31199       Volume: 26900
+
+####################################################
+BitOTTer Depth Tool for MPEx (bitotter_depth.pl) 
+This tool will display bid/ask depth for all or per MPSIC
+MPSIC's or one MPSIC input by the user. 
+ex: ./bitotter_depth.pl ALL usetor
+or
+ex: ./bitotter_depth.pl [MPSIC] usetor
+
+Output Sample:
+./bitotter_depth.pl S.MPOE usetor
+TOR ENABLED - Connecting to MPEx via Tor Socket...
+..::[ BitOTTer Market Depth for MPEx: S.MPOE ]::..
+S => Price: 100000      Volume: 10000
+S => Price: 41407       Volume: 40407
+S => Price: 41302       Volume: 46900
+S => Price: 41286       Volume: 57500
+B => Price: 32068       Volume: 27240
+B => Price: 31327       Volume: 18600
+B => Price: 31199       Volume: 26900
+
+####################################################
+BitOTTer Recent Trades Tool for MPEx (bitotter_trades.pl)
+This tool parses the MPEx RSS Feed for the most recent executed trades.
+ex: ./bitotter_trades.pl usetor
+
+Output Sample:
+./bitotter_trades.pl usetor
+TOR ENABLED - Connecting to MPEx via Tor Socket...
+..::[ BitOTTer Trade History Tool for MPEx ]::..
+177 F.GIGA.ETF @0.00109470 => Mon, 13 Aug 2012 22:53:47 +0000 => 177 F.GIGA.ETF shares sold for 0.00109470 BTC each, for a total value of 0.19376190 BTC.
+11`100 S.MPOE @0.00032068 => Mon, 13 Aug 2012 22:24:55 +0000 => 11`100 S.MPOE shares sold for 0.00032068 BTC each, for a total value of 3.55954800 BTC.
+50 S.BVPS @0.00313793 => Mon, 13 Aug 2012 22:15:20 +0000 => 50 S.BVPS shares sold for 0.00313793 BTC each, for a total value of 0.15689650 BTC.
+900 S.BVPS @0.00313009 => Mon, 13 Aug 2012 22:14:52 +0000 => 900 S.BVPS shares sold for 0.00313009 BTC each, for a total value of 2.81708100 BTC.
+1`000 S.BVPS @0.00311013 => Mon, 13 Aug 2012 22:14:24 +0000 => 1`000 S.BVPS shares sold for 0.00311013 BTC each, for a total value of 3.11013000 BTC.
+1`069 S.BVPS @0.00297796 => Mon, 13 Aug 2012 22:13:56 +0000 => 1`069 S.BVPS shares sold for 0.00297796 BTC each, for a total value of 3.18343924 BTC.
+7`387 S.MPOE @0.00034349 => Mon, 13 Aug 2012 21:45:58 +0000 => 7`387 S.MPOE shares sold for 0.00034349 BTC each, for a total value of 2.53736063 BTC.
+17`600 S.MPOE @0.00033887 => Mon, 13 Aug 2012 21:45:57 +0000 => 17`600 S.MPOE shares sold for 0.00033887 BTC each, for a total value of 5.96411200 BTC.
+190 S.MPOE @0.00033872 => Mon, 13 Aug 2012 21:45:57 +0000 => 190 S.MPOE shares sold for 0.00033872 BTC each, for a total value of 0.06435680 BTC.
+31`200 S.MPOE @0.00032068 => Mon, 13 Aug 2012 21:44:04 +0000 => 31`200 S.MPOE shares sold for 0.00032068 BTC each, for a total value of 10.00521600 BTC.
+43`200 S.MPOE @0.00033375 => Mon, 13 Aug 2012 21:44:04 +0000 => 43`200 S.MPOE shares sold for 0.00033375 BTC each, for a total value of 14.41800000 BTC.
+7`300 F.GIGA.ETF @0.00109470 => Mon, 13 Aug 2012 21:21:33 +0000 => 7`300 F.GIGA.ETF shares sold for 0.00109470 BTC each, for a total value of 7.99131000 BTC.
+
+####################################################
+BitOTTer VWAP Tool for MPEx [Volume Weighted Average Price] (bitotter_vwap.pl)
+This tool will display the rolling VWAP per MPSIC in 1/7/30 day format.
+
+ex: ./bitotter_vwap.pl [MPSIC] usetor
+
+Output Sample:
+./bitotter_vwap.pl S.MPOE usetor
+TOR ENABLED - Connecting to MPEx via Tor Socket...
+..::[ BitOTTer VWAP Tool for MPEx: S.MPOE ]::.. 
+S.MPOE:
+        1d avg: => 39476.8828845
+        1d min: => 35630
+        1d max: => 40660
+        1d vsh: => 4655787
+        1d vsa: => 183795958134
+        1d cnt: => 151
+
+        7d avg: => 38411.6558125
+        7d min: => 31333
+        7d max: => 40660
+        7d vsh: => 24399355
+        7d vsa: => 937219626307
+        7d cnt: => 724
+
+        30d avg: => 35852.3765124
+        30d min: => 10000
+        30d max: => 40660
+        30d vsh: => 46102008
+        30d vsa: => 1652866548794
+        30d cnt: => 1228
+####################################################
