@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 #
-# Copyright (c) 2012
+# Copyright (c) 2012, 2013
 # BITOTTER (http://www.bitotter.com) All rights reserved.
 #
 #
@@ -35,7 +35,7 @@
 #
 
 # BitOTTer for MPEx [Perl Version for UNIX] (bitotter.pl)
-# Copyright (c) 2012 bitotter.com <modsix@gmail.com> 0xD655A630A13E8C69 
+# Copyright (c) 2012, 2013 BitOTTer.com <modsix@gmail.com> 0xD655A630A13E8C69 
 
 use GPG;
 use LWP::UserAgent;
@@ -202,20 +202,17 @@ sub parseResponse {
 	close HTML_RES;
 	my $PGP_REPLY = "";
 	if(!$html) { 
-		print "Error: HTML wasn't correctly read from file! Exiting! Check output file.\n";
+		print "Error: HTML wasn't correctly read from $TMP_DIR/mpex_reply.txt! Exiting! Check output file - try to decrypt by hand.\n";
 		exit;
-	} elsif($html =~ m/<body>(.*)<\/body>/sm) {  # Grab the PGP message between the body tags, like a boss.
-		$PGP_REPLY = $+; 	
-		if(($PGP_REPLY =~ m/$BEGIN_PGP_MSG/) && ($PGP_REPLY =~ m/$END_PGP_MSG/)) { # check to make sure we grabbed a PGP message.
-			return $PGP_REPLY;
-		} else {
-			print "Error: PGP MESSAGE REGEX FAILURE!\n";
-			print "Whatever was parsed from inbetween the <body></body> tags in MPEx return wasn't a PGP Message.\n";
-			print "Check the mpex_reply.txt output file.\n";
-			exit;
-		}
-	} 
+	} elsif($html =~ m/$BEGIN_PGP_MESSAGE(.*)$END_PGP_MSG/sm) {  # Grab the PGP message.
+		return $+;
+	} else {
+		print "Error: PGP MESSAGE REGEX FAILURE!\n";
+		print "Parsed response messaeg from MPEx was not a PGP Message.\n";
+		print "Check $TMP_DIR/mpex_reply.txt output file.\n";
+		exit;
+	}
 
-	print "PGP MESSAGE NOT FOUND IN REPLY FROM MPEX! Check mpex_reply.txt file. Can not continue... exiting.\n";	
+	print "PGP MESSAGE NOT FOUND IN REPLY FROM MPEX! Check $TMP_DIR/mpex_reply.txt file. Exiting!\n";	
 	exit; 
 }
