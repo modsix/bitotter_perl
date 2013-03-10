@@ -63,7 +63,7 @@ my $irc_channel = "#bitcoin-assets";
 my $irc_port = "6667";
 
 # Init the IRC Client:
-my $irc = POE::Component::IRC->spawn() or die "Failed to instanciate the local IRC Client! Exiting! Need some help? Find mod6 on irc.freenode.net #BitOTTer or #bitcoin-assets\n $!";
+my $irc = POE::Component::IRC->spawn() or die "Failed to launch the local IRC Client! Exiting! Need some help? Find mod6 on irc.freenode.net #BitOTTer or #bitcoin-assets\n $!";
 
 # Create the bot session.
 POE::Session->create(
