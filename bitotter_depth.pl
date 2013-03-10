@@ -84,4 +84,3 @@ while (my ($code,$trade) = each %$mpsic) {
 		}
 	}
 }
-

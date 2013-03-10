@@ -45,7 +45,7 @@ use CGI;
 ## Some Globals we need set: Make sure that $TMP_DIR and $PATH_TO_GPG_HOME are set correctly to your environment.
 my $TMP_DIR = "/tmp";
 my $PATH_TO_GPG_HOME = '~/.gnupg/';
-my $URL = 'http://mpex.co';
+my $URL = 'http://mpex.coinbr.com';
 my $MPEX_GPG_KEY_ID = "9214FC6BF1B69921"; # as of 20120730
 my $BEGIN_PGP_MSG = "-----BEGIN PGP MESSAGE-----";
 my $END_PGP_MSG = "-----END PGP MESSAGE-----";
@@ -154,6 +154,9 @@ sub getGPGUserID {
 		}
 	} elsif($correct_key =~ m/y|Y/) {
 		return $GPG_PUB_KEY_ID;
+	} else {
+		print "Unknown repsonse, please try again.\n";	
+		getGPGUserID();
 	}
 }
 
@@ -176,7 +179,7 @@ sub sendToMPEx {
 	if($ARGV[1] eq "usetor") {
 		print "TOR ENABLED - Connecting to MPEx via Tor Socket...\n";
 		my $ua = LWP::UserAgent->new(agent => q{Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; YPC 3.2.0; .NET CLR 1.1.4322)},);
-		$ua->proxy([qw/ http https /] => 'socks://localhost:9050'); # Tor proxy - 9050 default
+		$ua->proxy([qw/ http https /] => 'socks://localhost:9150'); # Tor proxy - 9050 default
 		$ua->cookie_jar({});
 		$response = $ua->post($URL, {'msg' => $encrypted_mpex_cmd});
 		$web_content = $response->decoded_content();	
