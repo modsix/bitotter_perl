@@ -56,10 +56,6 @@ my $irc_username = "BitOTTer";
 my $irc_name = "BitOTTer Perl Client for MPEx IRC Bots";
 my $irc_server = "irc.freenode.net";
 my $irc_channel = "#bitcoin-assets";
-#my $irc_server = "irc.freebsdhackers.net";
-#my $irc_channel = "#BitOTTerTesting";
-
-
 my $irc_port = "6667";
 
 # Init the IRC Client:
