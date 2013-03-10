@@ -48,10 +48,6 @@ my $TMP_DIR = "/tmp";
 my $pastebin_raw_url = "http://pastebin.com/raw.php?i="; #pastebin key needs to be appended to the end like: http://pastebin.com/raw.php?i=C1dT6RrM
 my $pastebin_key = "";
 
-if(!$ARGV[0]) { 
-	print "Usage: ./bitotter_vwap.pl [MPSIC]\n";
-	exit 1;
-} 
 	
 ## IRC Settings
 my $irc_client_name = "BitOTTer_Perl_Client";
@@ -67,12 +63,19 @@ my $irc = POE::Component::IRC->spawn() or die "Failed to launch the local IRC Cl
 
 # Create the bot session.
 POE::Session->create(
-  inline_states => {
-    _start     => \&bitotter_start,
-    irc_001    => \&on_connect,
-    irc_public => \&on_public,
-  },
+	inline_states => {
+		_start     => \&bitotter_start,
+		irc_001    => \&on_connect,
+		irc_public => \&on_public
+	}
 );
+
+sub usage { 
+	if(!$ARGV[0] || !$ARGV[1]) { 
+		print "Usage: ./bitotter_vwap.pl [MPSIC] [DEPTH|VWAP]\n";
+		exit 1;
+	} 
+}
 
 sub bitotter_start {
 	$irc->yield(register => "all");
@@ -92,8 +95,14 @@ sub on_connect {
 
 	sleep(1);
 
-	## Send $vwap command to mpexbot:
-	$irc->yield(privmsg => $irc_channel, "\$vwap");
+	## Send $depth or $vwap command to mpexbot:
+	if($ARGV[1] =~ m/DEPTH/i) {
+		$irc->yield(privmsg => $irc_channel, "\$depth");
+	} elsif($ARGV[1] =~ m/VWAP/i) { 
+		$irc->yield(privmsg => $irc_channel, "\$vwap");
+	} else { 
+		usage();
+	}	
 }
 
 sub on_public {
@@ -101,28 +110,83 @@ sub on_public {
 	my ($sender, $who, $where, $what) = @_[SENDER, ARG0 .. ARG2];
 	my $nick = (split /!/, $who)[0];
 	my $channel = $where->[0];
-	
-	## XXX TESTING ONLY: if($sender =~ m/mod6/) { 
-	if($sender =~ m/mpexbot/) { 
-		$irc->yield(privmsg => $irc_channel, 'Something is wrong here, not communicating with mpexbot!');
+
+	## Only accept responses from mpex bot.	
+	if($sender !=~ m/mpexbot/) { 
+		print "WARNING: Something is wrong here, not communicating with mpexbot!\n";
 		$irc->yield(quit => $irc_channel);
 	}
 
 	if($what =~ m/http:\/\/pastebin.com\/(.*)/) { 
-		## Get the response pastebin/dpaste URL 
 		$pastebin_key = $+;	
 	}
 
-	## Get the VWAP From the constructed URI
-	getVWAP();
-	## Display the parsed JSON per MPSIC
-	displayVWAP();
+	if($ARGV[1] =~ m/DEPTH/i) {
+		getDepth();
+		displayDepth();
+	} elsif($ARGV[1] =~ m/VWAP/i) { 
+		getVWAP();
+		displayVWAP();
+	} else { 
+		print "WARNING: We shouldn't be here!\n";
+		usage();
+	}	
 
 	$irc->yield(quit => $irc_channel);
 }
 
-sub getVWAP {
+sub getDepth {
 
+	if($pastebin_key ne "") { 
+		$pastebin_raw_url .= $pastebin_key;
+	}
+	
+	my $user_agent = LWP::UserAgent->new();
+	$user_agent->timeout(30);
+
+	my $request = HTTP::Request->new('GET', $pastebin_raw_url);
+	my $response = $user_agent->request($request);
+	my $html = $response->content;
+	
+	open RES, ">$TMP_DIR/pastebin_depth.txt" or die "$! Couldn't open the $TMP_DIR/pastebin_depth.txt file for writing! Exiting! Check $TMP_DIR permissions.\n";
+	print RES $html;	
+	close RES;
+}
+
+sub displayDepth {
+
+	open JSON_DEPTH, "<$TMP_DIR/pastebin_depth.txt" or die "$! Couldn't open the $TMP_DIR/pastebin_depth.txt file for reading! Exiting!\n";
+	my $json_depth_data = "";
+	while(<JSON_DEPTH>) { $json_depth_data .= $_; }
+	close JSON_DEPTH;
+	
+	my $json = new JSON;
+	my $mpsic = $json->allow_unknown->relaxed->decode($json_depth_data);
+
+	print "..::[ BitOTTer Market Depth for MPEx: $ARGV[0] ]::..\n";
+	while (my ($code,$trade) = each %$mpsic) {
+		if($ARGV[0] eq "ALL") { 
+			print "MPSIC => $code:\n";
+			while (my ($action,$act_ref) = each %$trade) {
+				my @sorted = sort { $b->[0] <=> $a->[0] } @$act_ref;
+				foreach (@sorted) {
+					print "$action => Price: @$_[0]\tVolume: @$_[1]\n";
+				}
+			}
+		} else {
+			if($code eq $ARGV[0]) {
+				while (my ($action,$act_ref) = each %$trade) {
+					my @sorted = sort { $b->[0] <=> $a->[0] } @$act_ref;
+					foreach (@sorted) {
+						print "$action => Price: @$_[0]\tVolume: @$_[1]\n";	
+					} 
+				}
+			}
+		}
+	}
+}
+
+sub getVWAP {
 	if($pastebin_key ne "") { 
 		$pastebin_raw_url .= $pastebin_key;
 	}
@@ -141,7 +205,7 @@ sub getVWAP {
 
 sub displayVWAP {
 
-	open JSON_VWAP, "<$TMP_DIR/pastebin_vwap.txt" or die "$! Couldn't open the $TMP_DIR/pastebin_vwap.txt file for reading!  Exiting!\n";
+	open JSON_VWAP, "<$TMP_DIR/pastebin_vwap.txt" or die "$! Couldn't open the $TMP_DIR/pastebin_vwap.txt file for reading! Exiting!\n";
 	my $json_vwap_data = "";
 	while(<JSON_VWAP>) { $json_vwap_data .= $_; }
 	close JSON_VWAP;
