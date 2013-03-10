@@ -1,7 +1,7 @@
-#!/usr/bin/perl -w
+#!/usr/bin/perl 
 
 #
-# Copyright (c) 2012
+# Copyright (c) 2012,2013
 # BITOTTER (http://www.bitotter.com) All rights reserved.
 #
 #
@@ -45,7 +45,6 @@ use POE::Component::IRC;
 
 ## Globals 
 my $TMP_DIR = "/tmp";
-my $pastebin_url = "http://pastebin.com";
 my $pastebin_raw_url = "http://pastebin.com/raw.php?i="; #pastebin key needs to be appended to the end like: http://pastebin.com/raw.php?i=C1dT6RrM
 my $pastebin_key = "";
 
@@ -66,8 +65,7 @@ my $irc_port = "6667";
 # Init the IRC Client:
 my $irc = POE::Component::IRC->spawn() or die "Failed to instanciate the local IRC Client! Exiting! Need some help? Find mod6 on irc.freenode.net #BitOTTer or #bitcoin-assets\n $!";
 
-# Create the bot session.  The new() call specifies the events the bot
-# knows about and the functions that will handle those events.
+# Create the bot session.
 POE::Session->create(
   inline_states => {
     _start     => \&bitotter_start,
