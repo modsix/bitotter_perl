@@ -34,7 +34,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-# BitOTTer Market VWAP Tool for MPEx (bitotter_vwap.pl)
+# BitOTTer Market Data Display Tool for MPEx (bitotter_market_data.pl)
 # Copyright (c) 2012,2013 bitotter.com <modsix@gmail.com> 0xD655A630A13E8C69 
 
 use JSON;
@@ -46,9 +46,12 @@ use POE::Component::IRC;
 ## Globals 
 my $TMP_DIR = "/tmp";
 my $pastebin_raw_url = "http://pastebin.com/raw.php?i="; 
+my $irc_botcontrol_nick = "YOUR_REGISTERED_OTC_IRCNICK_HERE";
+my $mpexbot = "mpexbot";
 my $pastebin_key = "";
+my $req_mpsic = "";
+my $req_type = "";
 
-	
 ## IRC Settings
 my $irc_client_name = "BitOTTer_Perl_Client";
 my $irc_nick = "BitOTTer" . $$ % 1000;
@@ -66,17 +69,9 @@ POE::Session->create(
 	inline_states => {
 		_start     => \&bitotter_start,
 		irc_001    => \&on_connect,
-		irc_public => \&on_public
-	
+		irc_msg	   => \&on_private
 	}
 );
-
-sub usage { 
-	if(!$ARGV[0] || !$ARGV[1]) { 
-		print "Usage: ./bitotter_market_depth.pl [MPSIC] [DEPTH|VWAP]\n";
-		exit 1;
-	} 
-}
 
 sub bitotter_start {
 	$irc->yield(register => "all");
@@ -92,59 +87,50 @@ sub bitotter_start {
 }
 
 sub on_connect {
+	sleep(3);
 	$irc->yield(join => $irc_channel);
-
-	sleep(1);
-
-	## Send $depth or $vwap command to mpexbot:
-	if($ARGV[1] =~ m/DEPTH/i) {
-		$irc->yield(privmsg => $irc_channel, "\$depth");
-	} elsif($ARGV[1] =~ m/VWAP/i) { 
-		$irc->yield(privmsg => $irc_channel, "\$vwap");
-	} else { 
-		usage();
-	}	
 }
 
-sub on_public {
+sub on_private { 
 	## Prepare for mpexbot response
 	my ($sender, $who, $where, $what) = @_[SENDER, ARG0 .. ARG2];
 	my $nick = (split /!/, $who)[0];
 	my $channel = $where->[0];
-	
-	if($sender !=~ m/mpexbot/) { 
-		print "WARNING: Something is wrong here, not communicating with mpexbot!\n";
-		$irc->yield(quit => $irc_channel);
-	}
-
-	if($what =~ m/http:\/\/pastebin.com\/(.*)/) { 
+		
+	if($nick eq $irc_botcontrol_nick && $what =~ m/DEPTH/i) { 
+		($req_type, $req_mpsic) = split /\|/, $what;
+		$irc->yield(privmsg => $mpexbot, "\$depth"); 
+		sleep(10); # Give mpexbot 10 seconds to process.
+	} elsif($nick eq $irc_botcontrol_nick && $what =~ m/VWAP/i) {
+		($req_type, $req_mpsic) = split /\|/, $what;
+		$irc->yield(privmsg => $mpexbot, "\$vwap"); 
+		sleep(10); # Give mpexbot 10 seconds to process.
+	} elsif($nick eq $mpexbot && $what =~ m/http:\/\/pastebin.com\/(.*)/) {
 		$pastebin_key = $+;	
+		if($req_type eq "DEPTH") { 
+			getDepth();
+			displayDepth();
+		} elsif($req_type eq "VWAP") { 
+			getVWAP();
+			displayVWAP();
+		} else {
+			$irc->yield(privmsg => $irc_botcontrol_nick, "CMD NOT FOUND: Didn't match DEPTH|VWAP!"); 
+		}		
+	} else {
+		$irc->yield(privmsg => $irc_botcontrol_nick, "CMD NOT FOUND!"); 
 	}
-
-	if($ARGV[1] =~ m/DEPTH/i) {
-		getDepth();
-		displayDepth();
-	} elsif($ARGV[1] =~ m/VWAP/i) { 
-		getVWAP();
-		displayVWAP();
-	} else { 
-		print "WARNING: We shouldn't be here!\n";
-		usage();
-	}	
-
-	$irc->yield(quit => $irc_channel);
 }
 
 sub getDepth {
-
+	my $tmp_raw_url = $pastebin_raw_url;
 	if($pastebin_key ne "") { 
-		$pastebin_raw_url .= $pastebin_key;
+		$tmp_raw_url .= $pastebin_key;
 	}
 	
 	my $user_agent = LWP::UserAgent->new();
 	$user_agent->timeout(30);
 
-	my $request = HTTP::Request->new('GET', $pastebin_raw_url);
+	my $request = HTTP::Request->new('GET', $tmp_raw_url);
 	my $response = $user_agent->request($request);
 	my $html = $response->content;
 	
@@ -160,12 +146,12 @@ sub displayDepth {
 	while(<JSON_DEPTH>) { $json_depth_data .= $_; }
 	close JSON_DEPTH;
 	
-	my $json = new JSON;
-	my $mpsic = $json->allow_unknown->relaxed->decode($json_depth_data);
+	my $json_depth_obj = new JSON;
+	my $mpsic = $json_depth_obj->allow_unknown->relaxed->decode($json_depth_data);
 
-	print "..::[ BitOTTer Market Depth for MPEx: $ARGV[0] ]::..\n";
+	print "..::[ BitOTTer Market Depth for MPEx: $req_mpsic ]::..\n";
 	while (my ($code,$trade) = each %$mpsic) {
-		if($ARGV[0] eq "ALL") { 
+		if($req_mpsic eq "ALL") { 
 			print "MPSIC => $code:\n";
 			while (my ($action,$act_ref) = each %$trade) {
 				my @sorted = sort { $b->[0] <=> $a->[0] } @$act_ref;
@@ -174,7 +160,7 @@ sub displayDepth {
 				}
 			}
 		} else {
-			if($code eq $ARGV[0]) {
+			if($code eq $req_mpsic) {
 				while (my ($action,$act_ref) = each %$trade) {
 					my @sorted = sort { $b->[0] <=> $a->[0] } @$act_ref;
 					foreach (@sorted) {
@@ -187,14 +173,15 @@ sub displayDepth {
 }
 
 sub getVWAP {
+	my $tmp_raw_url = $pastebin_raw_url;
 	if($pastebin_key ne "") { 
-		$pastebin_raw_url .= $pastebin_key;
+		$tmp_raw_url .= $pastebin_key;
 	}
 	
 	my $user_agent = LWP::UserAgent->new();
 	$user_agent->timeout(30);
 
-	my $request = HTTP::Request->new('GET', $pastebin_raw_url);
+	my $request = HTTP::Request->new('GET', $tmp_raw_url);
 	my $response = $user_agent->request($request);
 	my $html = $response->content;
 	
@@ -210,12 +197,12 @@ sub displayVWAP {
 	while(<JSON_VWAP>) { $json_vwap_data .= $_; }
 	close JSON_VWAP;
 	
-	my $json = new JSON;
-	my $mpsic = $json->allow_unknown->relaxed->decode($json_vwap_data);
+	my $json_vwap_obj = new JSON;
+	my $mpsic = $json_vwap_obj->allow_unknown->relaxed->decode($json_vwap_data);
 
-	print "..::[ BitOTTer VWAP Tool for MPEx: $ARGV[0] ]::..\n";
+	print "..::[ BitOTTer VWAP Tool for MPEx: $req_mpsic ]::..\n";
 	while (my ($code, $rolling_window) = each %$mpsic) {
-		if($code eq $ARGV[0]) {
+		if($code eq $req_mpsic) {
 			print "$code:\n";
 			print "\t1d avg: => $rolling_window->{'1d'}->{'avg'}\n";
 			print "\t1d min: => $rolling_window->{'1d'}->{'min'}\n";
