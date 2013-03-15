@@ -1,7 +1,7 @@
 #!/usr/bin/perl 
 
 #
-# Copyright (c) 2012,2013
+# Copyright (c) 2012, 2013
 # BITOTTER (http://www.bitotter.com) All rights reserved.
 #
 #
@@ -35,7 +35,7 @@
 #
 
 # BitOTTer Market Data Display Tool for MPEx (bitotter_market_data.pl)
-# Copyright (c) 2012,2013 bitotter.com <modsix@gmail.com> 0xD655A630A13E8C69 
+# Copyright (c) 2012, 2013 bitotter.com <modsix@gmail.com> 0xD655A630A13E8C69 
 
 use JSON;
 use LWP::UserAgent; 
@@ -45,7 +45,7 @@ use POE::Component::IRC;
 
 ## User Defined Globals 
 my $TMP_DIR = "/tmp";
-my $irc_botcontrol_nick = "mod6";
+my $irc_botcontrol_nick = "YOUR_BITCOIN_OTC_REGISTERED_NICK_HERE";
 
 ## Globals 
 my $mpexbot = "mpexbot";
