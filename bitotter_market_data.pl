@@ -43,16 +43,18 @@ use LWP::Simple qw(get);
 use POE;
 use POE::Component::IRC;
 
-## Globals 
+## User Defined Globals 
 my $TMP_DIR = "/tmp";
-my $pastebin_raw_url = "http://pastebin.com/raw.php?i="; 
-my $irc_botcontrol_nick = "YOUR_REGISTERED_OTC_IRCNICK_HERE";
+my $irc_botcontrol_nick = "mod6";
+
+## Globals 
 my $mpexbot = "mpexbot";
+my $pastebin_raw_url = "http://pastebin.com/raw.php?i="; 
 my $pastebin_key = "";
 my $req_mpsic = "";
 my $req_type = "";
 
-## IRC Settings
+## IRC Client Settings
 my $irc_client_name = "BitOTTer_Perl_Client";
 my $irc_nick = "BitOTTer" . $$ % 1000;
 my $irc_username = "BitOTTer";
@@ -61,10 +63,10 @@ my $irc_server = "irc.freenode.net";
 my $irc_channel = "#bitcoin-assets";
 my $irc_port = "6667";
 
-# Init the IRC Client:
+## Spawn the IRC Client:
 my $irc = POE::Component::IRC->spawn() or die "Failed to launch the local IRC Client! Exiting! Need some help? Find mod6 on irc.freenode.net #BitOTTer or #bitcoin-assets\n $!";
 
-# Create the bot session.
+## Create the irc bot session.
 POE::Session->create(
 	inline_states => {
 		_start     => \&bitotter_start,
@@ -87,6 +89,7 @@ sub bitotter_start {
 }
 
 sub on_connect {
+	## Join #bitcoin-assets and just idle in the channel until interrupt (^C from calling terminal).
 	sleep(3);
 	$irc->yield(join => $irc_channel);
 }
@@ -105,7 +108,7 @@ sub on_private {
 		($req_type, $req_mpsic) = split /\|/, $what;
 		$irc->yield(privmsg => $mpexbot, "\$vwap"); 
 		sleep(10); # Give mpexbot 10 seconds to process.
-	} elsif($nick eq $mpexbot && $what =~ m/http:\/\/pastebin.com\/(.*)/) {
+	} elsif($nick eq $mpexbot && $what =~ m/http\:\/\/pastebin\.com\/(.*)/) {
 		$pastebin_key = $+;	
 		if($req_type eq "DEPTH") { 
 			getDepth();
