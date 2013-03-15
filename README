@@ -35,8 +35,9 @@
 # Copyright (c) 2012, 2013 bitotter.com <modsix@gmail.com> 0xD655A630A13E8C69
 
 BitOTTer Perl Tools: 
-BitOTTer Market Data Tool for MPEx -- v0.01 alpha -- Will connect to IRC and allow botcontroller to issue DEPTH|VWAP commands to mpexbot 
-					          -- parsed output prints to terminal window where script is launched (STDOUT).
+BitOTTer Market Data Tool for MPEx -- v0.01 alpha 
+	-- Will connect to IRC and allow botcontroller to issue DEPTH|VWAP commands to mpexbot 
+	-- parsed output prints to terminal window where script is launched (STDOUT).
 BitOTTer Depth Tool for MPEx (bitotter_depth.pl) -- v0.02 : Support for mpexbot
 BitOTTer VWAP Tool for MPEx [Volume Weighted Average Price] (bitotter_vwap.pl) -- v0.02 : Support for mpexbot
 BitOTTer (bitotter.pl)  -- deprecated for now
@@ -45,26 +46,39 @@ BitOTTer (bitotter.pl)  -- deprecated for now
 REQUIRED LIBS per each of BitOTTer Perl Tools:  
 
 bitotter_depth.pl
-LWP::Protocol::socks --> http://search.cpan.org/~scr/LWP-Protocol-socks-1.6/lib/LWP/Protocol/socks4.pm
-LWP::UserAgent --> http://search.cpan.org/~gaas/libwww-perl-6.04/lib/LWP/UserAgent.pm
-LWP::Simple --> http://search.cpan.org/~gaas/libwww-perl-6.04/lib/LWP/Simple.pm
-JSON        --> http://search.cpan.org/~makamaka/JSON-2.53/lib/JSON.pm
+LWP::Protocol::socks --> 
+	http://search.cpan.org/~scr/LWP-Protocol-socks-1.6/lib/LWP/Protocol/socks4.pm
+LWP::UserAgent --> 
+	http://search.cpan.org/~gaas/libwww-perl-6.04/lib/LWP/UserAgent.pm
+LWP::Simple --> 
+	http://search.cpan.org/~gaas/libwww-perl-6.04/lib/LWP/Simple.pm
+JSON        --> 
+	http://search.cpan.org/~makamaka/JSON-2.53/lib/JSON.pm
 
 bitotter_vwap.pl
-LWP::Protocol::socks --> http://search.cpan.org/~scr/LWP-Protocol-socks-1.6/lib/LWP/Protocol/socks4.pm
-LWP::UserAgent --> http://search.cpan.org/~gaas/libwww-perl-6.04/lib/LWP/UserAgent.pm
-LWP::Simple --> http://search.cpan.org/~gaas/libwww-perl-6.04/lib/LWP/Simple.pm
-JSON        --> http://search.cpan.org/~makamaka/JSON-2.53/lib/JSON.pm
+LWP::Protocol::socks --> 
+	http://search.cpan.org/~scr/LWP-Protocol-socks-1.6/lib/LWP/Protocol/socks4.pm
+LWP::UserAgent --> 
+	http://search.cpan.org/~gaas/libwww-perl-6.04/lib/LWP/UserAgent.pm
+LWP::Simple --> 
+	http://search.cpan.org/~gaas/libwww-perl-6.04/lib/LWP/Simple.pm
+JSON        --> 
+	http://search.cpan.org/~makamaka/JSON-2.53/lib/JSON.pm
 
 bitotter_market_data.pl
-JSON        --> http://search.cpan.org/~makamaka/JSON-2.53/lib/JSON.pm
-LWP::UserAgent --> http://search.cpan.org/~gaas/libwww-perl-6.04/lib/LWP/UserAgent.pm
-LWP::Simple --> http://search.cpan.org/~gaas/libwww-perl-6.04/lib/LWP/Simple.pm
-POE::Component::IRC --> http://search.cpan.org/dist/POE-Component-IRC/lib/POE/Component/IRC.pm
+LWP::UserAgent --> 
+	http://search.cpan.org/~gaas/libwww-perl-6.04/lib/LWP/UserAgent.pm
+LWP::Simple --> 
+	http://search.cpan.org/~gaas/libwww-perl-6.04/lib/LWP/Simple.pm
+POE::Component::IRC --> 
+	http://search.cpan.org/dist/POE-Component-IRC/lib/POE/Component/IRC.pm
+JSON        --> 
+	http://search.cpan.org/~makamaka/JSON-2.53/lib/JSON.pm
 
 >>>>> !!!  Depreacated until further notice: 2013.03.14 !!! <<<<<<
 
- ####bitotter.pl -- depreacated since 2013.03.09, no outside facing service at this time -- may return some day:
+ ####bitotter.pl -- depreacated since 2013.03.09, no outside facing service at this time -- 
+ #### ----may return some day soon ----:
  ####GPG --> http://search.cpan.org/~miles/GPG-0.06/GPG.pm  
  ####
  ####ATTENTION -- The GPG perl module will require a change before it will work
@@ -89,20 +103,23 @@ POE::Component::IRC --> http://search.cpan.org/dist/POE-Component-IRC/lib/POE/Co
  ####CGI            --> http://search.cpan.org/~markstos/CGI.pm-3.60/lib/CGI.pm
 
 ####################################################
-WARNING: For some reason I havnen't figured out yet, tor now opens a socket on 9150 
-	by default for whatever reason, and if you try to change it to 9050 as it was
-	before, it gets tempermental.  So to avoid some stuff, just set up tor to listen
-	on 9150 now.  This is default, so if you keep up with all the latest versions (AS YOU SHOULD)
-	this shouldn't be an issue.
+WARNING: For some reason I havnen't figured out yet, tor now opens a socket 
+	on 9150 by default for whatever reason, and if you try to change it to 9050 
+	as it was before, it gets tempermental.  So to avoid some stuff, just set 
+	up tor to listen on 9150 now.  This is the default, so if you keep up with all 
+	the latest versions (AS YOU SHOULD) this shouldn't be an issue.
 
 NOTE: BitOTTer perl tools will look for localhost:9150 to use for a Tor Socket.
       If you wish to try to run these tools with a Tor socket, make sure tor is 
       setup to listen on localhost:9150
 
       How do I set it up to use 9050?  This is how to do just that (taken from the TorFAQ): 
-      "In Vidalia, go to Settings->Advanced and uncheck the box that says 'Configure ControlPort automatically'. 
-      Your SOCKS port will then be on 9150."  This is taken from this page: https://trac.torproject.org/projects/tor/wiki/doc/TorFAQ#SOCKSAndDNS
-      And more good info for how to use Tor can be found here: https://www.torproject.org/docs/documentation.html.en
+      "In Vidalia, go to Settings->Advanced and uncheck the box that says 
+	'Configure ControlPort automatically'. 
+      Your SOCKS port will then be on 9150."  This is taken from this page: 
+	https://trac.torproject.org/projects/tor/wiki/doc/TorFAQ#SOCKSAndDNS
+      And more good info for how to use Tor can be found here: 
+	https://www.torproject.org/docs/documentation.html.en
 
       Not sure if Tor is actually listening on localhost:9050 ?? 
       Try the following at your UNIX prompt:
@@ -113,7 +130,7 @@ NOTE: BitOTTer perl tools will look for localhost:9150 to use for a Tor Socket.
 
       If you wish to run these tools without using tor, simply just leave off
       the 'usetor' flag and these BitOTTer perl tools will use a simple naked
-      connection to MPEx.  See the without tor example below.  Need help!?  
+      connection to the data feed.  See the without tor example below.  Need help!?  
       Find me on irc.freenode.net or send email to modsix at gmail dot com -- mod6 
 
 ####################################################
@@ -148,12 +165,13 @@ NOTE: BitOTTer perl tools will look for localhost:9150 to use for a Tor Socket.
 
 ####################################################
 BitOTTer Depth Tool for MPEx (bitotter_depth.pl) v0.02 beta
-This tool will display bid/ask depth for all MPSICs or per symbol input by the user. 
+This tool will display bid/ask depth for all MPSICs or 
+per MPSIC input by the user. 
 
-Usage: ./bitotter_depth.pl <pastebin-raw-url> <MPSIC> [usetor|no-tor]
+Usage: ./bitotter_depth.pl <pastebin-raw-url> <MPSIC|ALL> [usetor|no-tor]
 
 Output Sample:
-mod6@localhost ~$ ./bitotter_depth.pl http://pastebin.com/raw.php?i=SoMeKeYId S.MPOE usetor
+~$ ./bitotter_depth.pl http://pastebin.com/raw.php?i=SoMeKeYId S.MPOE usetor
 TOR ENABLED - Connecting to pastebin via Tor Socket...
 ..::[ BitOTTer Market Depth for MPEx: S.MPOE ]::..
 S => Price: 100000000	Volume: 10000
@@ -196,18 +214,37 @@ B => Price: 102	Volume: 5000000
 B => Price: 101	Volume: 10000000
 B => Price: 100	Volume: 10000000
 
-
 ---------------------------------------------------------
-NOTE: If you request for ALL instead of a particular MPSIC, you may want to pipe output 
-to a different file or perhaps `less` as the data can be longer than one page.
+NOTE: If you request to view ALL MPSICs instead of one in particular, 
+you may want to pipe output to a different file or perhaps `more` or `less` 
+as the data can be longer than one page.
+
+Output Sample:
+~$ ./bitotter_depth.pl http://pastebin.com/raw.php?i=SoMeKeYId ALL usetor | less 
+TOR ENABLED - Connecting to pastebin via Tor Socket...
+..::[ BitOTTer Market Depth for MPEx: ALL ]::..
+MPSIC => O.BTCUSD.C630N:
+S => Price: 21209323    Volume: 1000
+B => Price: 2103500     Volume: 1000
+MPSIC => O.BTCUSD.C630T:
+S => Price: 5213501     Volume: 1000
+B => Price: 487924      Volume: 1000
+MPSIC => O.BTCUSD.C730N:
+S => Price: 16901438    Volume: 1000
+B => Price: 2   Volume: 1000
+MPSIC => O.BTCUSD.P050N:
+S => Price: 5213501     Volume: 1000
+B => Price: 544 Volume: 1000
+...
 
 ####################################################
 BitOTTer VWAP Tool for MPEx [Volume Weighted Average Price] (bitotter_vwap.pl) v0.02
-This tool will display the rolling VWAP per MPSIC in 1/7/30 day format from pastebin URL via mpexbot.
+This tool will display the rolling VWAP per MPSIC in 1/7/30 day format 
+from pastebin URL via mpexbot.
 
 Usage: ./bitotter_vwap.pl <pastebin-raw-url> <MPSIC> [usetor|no-tor]
 Output Sample:
-mod6@localhost ~$ ./bitotter_vwap.pl http://pastebin.com/raw.php?i=SoMeKeYId S.MPOE usetor
+~$ ./bitotter_vwap.pl http://pastebin.com/raw.php?i=SoMeKeYId S.MPOE usetor
 TOR ENABLED - Connecting to pastebin via Tor Socket...
 ..::[ BitOTTer VWAP Tool for MPEx: S.MPOE ]::..
 S.MPOE:
