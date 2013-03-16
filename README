@@ -35,12 +35,12 @@
 # Copyright (c) 2012, 2013 bitotter.com <modsix@gmail.com> 0xD655A630A13E8C69
 
 BitOTTer Perl Tools: 
-BitOTTer Market Data Tool for MPEx -- v0.01 alpha 
+BitOTTer Market Data Tool for MPEx (bitotter_market_depth.pl) -- v0.01 alpha 
 	-- Will connect to IRC and allow botcontroller to issue DEPTH|VWAP commands to mpexbot 
 	-- parsed output prints to terminal window where script is launched (STDOUT).
 BitOTTer Depth Tool for MPEx (bitotter_depth.pl) -- v0.02 : Support for mpexbot
 BitOTTer VWAP Tool for MPEx [Volume Weighted Average Price] (bitotter_vwap.pl) -- v0.02 : Support for mpexbot
-BitOTTer (bitotter.pl)  -- deprecated for now
+BitOTTer (bitotter.pl)  -- deprecated!! (for now)
 
 ####################################################
 REQUIRED LIBS per each of BitOTTer Perl Tools:  
@@ -49,31 +49,41 @@ bitotter_depth.pl
 LWP::Protocol::socks --> 
 	http://search.cpan.org/~scr/LWP-Protocol-socks-1.6/lib/LWP/Protocol/socks4.pm
 LWP::UserAgent --> 
-	http://search.cpan.org/~gaas/libwww-perl-6.04/lib/LWP/UserAgent.pm
+	Source: http://cpansearch.perl.org/src/GAAS/libwww-perl-6.04/lib/LWP/UserAgent.pm
+	Project: http://search.cpan.org/~gaas/libwww-perl-6.04/lib/LWP/UserAgent.pm
 LWP::Simple --> 
-	http://search.cpan.org/~gaas/libwww-perl-6.04/lib/LWP/Simple.pm
+	Source: http://cpansearch.perl.org/src/GAAS/libwww-perl-6.04/lib/LWP/Simple.pm
+	Project: http://search.cpan.org/~gaas/libwww-perl-6.04/lib/LWP/Simple.pm
 JSON        --> 
-	http://search.cpan.org/~makamaka/JSON-2.53/lib/JSON.pm
+	Source: http://cpansearch.perl.org/src/MAKAMAKA/JSON-2.53/lib/JSON.pm
+	Project: http://search.cpan.org/~makamaka/JSON-2.53/lib/JSON.pm
 
 bitotter_vwap.pl
 LWP::Protocol::socks --> 
 	http://search.cpan.org/~scr/LWP-Protocol-socks-1.6/lib/LWP/Protocol/socks4.pm
 LWP::UserAgent --> 
-	http://search.cpan.org/~gaas/libwww-perl-6.04/lib/LWP/UserAgent.pm
+	Source: http://cpansearch.perl.org/src/GAAS/libwww-perl-6.04/lib/LWP/UserAgent.pm
+	Project: http://search.cpan.org/~gaas/libwww-perl-6.04/lib/LWP/UserAgent.pm
 LWP::Simple --> 
-	http://search.cpan.org/~gaas/libwww-perl-6.04/lib/LWP/Simple.pm
+	Source: http://cpansearch.perl.org/src/GAAS/libwww-perl-6.04/lib/LWP/Simple.pm
+	Project: http://search.cpan.org/~gaas/libwww-perl-6.04/lib/LWP/Simple.pm
 JSON        --> 
-	http://search.cpan.org/~makamaka/JSON-2.53/lib/JSON.pm
+	Source: http://cpansearch.perl.org/src/MAKAMAKA/JSON-2.53/lib/JSON.pm
+	Project: http://search.cpan.org/~makamaka/JSON-2.53/lib/JSON.pm
 
 bitotter_market_data.pl
 LWP::UserAgent --> 
-	http://search.cpan.org/~gaas/libwww-perl-6.04/lib/LWP/UserAgent.pm
+	Source: http://cpansearch.perl.org/src/GAAS/libwww-perl-6.04/lib/LWP/UserAgent.pm
+	Project: http://search.cpan.org/~gaas/libwww-perl-6.04/lib/LWP/UserAgent.pm
 LWP::Simple --> 
-	http://search.cpan.org/~gaas/libwww-perl-6.04/lib/LWP/Simple.pm
+	Source: http://cpansearch.perl.org/src/GAAS/libwww-perl-6.04/lib/LWP/Simple.pm
+	Project: http://search.cpan.org/~gaas/libwww-perl-6.04/lib/LWP/Simple.pm
 POE::Component::IRC --> 
-	http://search.cpan.org/dist/POE-Component-IRC/lib/POE/Component/IRC.pm
+	Source: http://cpansearch.perl.org/src/BINGOS/POE-Component-IRC-6.82/lib/POE/Component/IRC.pm
+	Project: http://search.cpan.org/dist/POE-Component-IRC/lib/POE/Component/IRC.pm
 JSON        --> 
-	http://search.cpan.org/~makamaka/JSON-2.53/lib/JSON.pm
+	Source: http://cpansearch.perl.org/src/MAKAMAKA/JSON-2.53/lib/JSON.pm
+	Project: http://search.cpan.org/~makamaka/JSON-2.53/lib/JSON.pm
 
 >>>>> !!!  Depreacated until further notice: 2013.03.14 !!! <<<<<<
 
@@ -270,3 +280,41 @@ S.MPOE:
 	30d cnt: => 3361
 
 ####################################################
+
+BitOTTer Market Depth IRC Tool (bitotter_market_data.pl) v0.01 alpha
+This tool will connect to IRC and issue DEPTH or VWAP to mpexbot via
+private message.  The market data will be parsed and output to std-out.
+
+Example:
+
+(17:51)  (!) Irssi: Starting query in freenode with BitOTTer<###>
+(18:01) <mod6> VWAP|^OIX
+(18:02) <mod6> DEPTH|O.BTCUSD.C450T
+
+..::[ BitOTTer VWAP Tool for MPEx: ^OIX ]::..
+^OIX:
+        1d avg: => 
+        1d min: => 
+        1d max: => 
+        1d vsh: => 
+        1d vsa: => 
+        1d cnt: => 
+
+        7d avg: => 3931406066
+        7d min: => 3762123733
+        7d max: => 5758756229
+        7d vsh: => 28662
+        7d vsa: => 485115460096
+        7d cnt: => 
+
+        30d avg: => 
+        30d min: => 
+        30d max: => 
+        30d vsh: => 
+        30d vsa: => 
+        30d cnt: => 
+
+..::[ BitOTTer Market Depth for MPEx: O.BTCUSD.C450T ]::..
+S => Price: 22000000    Volume: 231
+S => Price: 18101976    Volume: 54
+B => Price: 11870148    Volume: 1000
