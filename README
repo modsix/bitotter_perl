@@ -35,9 +35,10 @@
 # Copyright (c) 2012, 2013 bitotter.com <modsix@gmail.com> 0xD655A630A13E8C69
 
 BitOTTer Perl Tools: 
-BitOTTer Market Data Tool for MPEx (bitotter_market_depth.pl) -- v0.01 alpha 
+BitOTTer Market Data Tool for MPEx (bitotter_market_depth.pl) 
+	-- v0.01 alpha, works ok so far during testing.  Use with caution.
 	-- Will connect to IRC and allow botcontroller to issue DEPTH|VWAP commands to mpexbot 
-	-- parsed output prints to terminal window where script is launched (STDOUT).
+	-- Parsed output prints to terminal window where script is launched (STDOUT).
 BitOTTer Depth Tool for MPEx (bitotter_depth.pl) -- v0.02 : Support for mpexbot
 BitOTTer VWAP Tool for MPEx [Volume Weighted Average Price] (bitotter_vwap.pl) -- v0.02 : Support for mpexbot
 BitOTTer (bitotter.pl)  -- deprecated!! (for now)
@@ -50,40 +51,30 @@ LWP::Protocol::socks -->
 	http://search.cpan.org/~scr/LWP-Protocol-socks-1.6/lib/LWP/Protocol/socks4.pm
 LWP::UserAgent --> 
 	Source: http://cpansearch.perl.org/src/GAAS/libwww-perl-6.04/lib/LWP/UserAgent.pm
-	Project: http://search.cpan.org/~gaas/libwww-perl-6.04/lib/LWP/UserAgent.pm
 LWP::Simple --> 
 	Source: http://cpansearch.perl.org/src/GAAS/libwww-perl-6.04/lib/LWP/Simple.pm
-	Project: http://search.cpan.org/~gaas/libwww-perl-6.04/lib/LWP/Simple.pm
 JSON        --> 
 	Source: http://cpansearch.perl.org/src/MAKAMAKA/JSON-2.53/lib/JSON.pm
-	Project: http://search.cpan.org/~makamaka/JSON-2.53/lib/JSON.pm
 
 bitotter_vwap.pl
 LWP::Protocol::socks --> 
 	http://search.cpan.org/~scr/LWP-Protocol-socks-1.6/lib/LWP/Protocol/socks4.pm
 LWP::UserAgent --> 
 	Source: http://cpansearch.perl.org/src/GAAS/libwww-perl-6.04/lib/LWP/UserAgent.pm
-	Project: http://search.cpan.org/~gaas/libwww-perl-6.04/lib/LWP/UserAgent.pm
 LWP::Simple --> 
 	Source: http://cpansearch.perl.org/src/GAAS/libwww-perl-6.04/lib/LWP/Simple.pm
-	Project: http://search.cpan.org/~gaas/libwww-perl-6.04/lib/LWP/Simple.pm
 JSON        --> 
 	Source: http://cpansearch.perl.org/src/MAKAMAKA/JSON-2.53/lib/JSON.pm
-	Project: http://search.cpan.org/~makamaka/JSON-2.53/lib/JSON.pm
 
 bitotter_market_data.pl
 LWP::UserAgent --> 
 	Source: http://cpansearch.perl.org/src/GAAS/libwww-perl-6.04/lib/LWP/UserAgent.pm
-	Project: http://search.cpan.org/~gaas/libwww-perl-6.04/lib/LWP/UserAgent.pm
 LWP::Simple --> 
 	Source: http://cpansearch.perl.org/src/GAAS/libwww-perl-6.04/lib/LWP/Simple.pm
-	Project: http://search.cpan.org/~gaas/libwww-perl-6.04/lib/LWP/Simple.pm
 POE::Component::IRC --> 
 	Source: http://cpansearch.perl.org/src/BINGOS/POE-Component-IRC-6.82/lib/POE/Component/IRC.pm
-	Project: http://search.cpan.org/dist/POE-Component-IRC/lib/POE/Component/IRC.pm
 JSON        --> 
 	Source: http://cpansearch.perl.org/src/MAKAMAKA/JSON-2.53/lib/JSON.pm
-	Project: http://search.cpan.org/~makamaka/JSON-2.53/lib/JSON.pm
 
 >>>>> !!!  Depreacated until further notice: 2013.03.14 !!! <<<<<<
 
@@ -287,10 +278,18 @@ private message.  The market data will be parsed and output to std-out.
 
 Example:
 
+Private message commands directly to BitOTTer<###> - where <###> is the random bot number.
+----8<--------8<--------8<--------8<--------8<--------8<---- 
+
 (17:51)  (!) Irssi: Starting query in freenode with BitOTTer<###>
 (18:01) <mod6> VWAP|^OIX
 (18:02) <mod6> DEPTH|O.BTCUSD.C450T
 
+----8<--------8<--------8<--------8<--------8<--------8<---- 
+
+Output to StdOut:
+
+~$ ./bitotter_market_depth.pl 
 ..::[ BitOTTer VWAP Tool for MPEx: ^OIX ]::..
 ^OIX:
         1d avg: => 
@@ -318,3 +317,8 @@ Example:
 S => Price: 22000000    Volume: 231
 S => Price: 18101976    Volume: 54
 B => Price: 11870148    Volume: 1000
+
+...
+
+
+
