@@ -41,7 +41,7 @@ BitOTTer Market Data Tool for MPEx (bitotter_market_depth.pl)
 	-- Parsed output prints to terminal window where script is launched (STDOUT).
 BitOTTer Depth Tool for MPEx (bitotter_depth.pl) -- v0.02 : Support for mpexbot
 BitOTTer VWAP Tool for MPEx [Volume Weighted Average Price] (bitotter_vwap.pl) -- v0.02 : Support for mpexbot
-BitOTTer (bitotter.pl)  -- deprecated!! (for now)
+BitOTTer (bitotter.pl) MPEx Trade Tool -- v0.02
 
 ####################################################
 REQUIRED LIBS per each of BitOTTer Perl Tools:  
@@ -50,58 +50,57 @@ bitotter_depth.pl
 LWP::Protocol::socks --> 
 	http://search.cpan.org/~scr/LWP-Protocol-socks-1.6/lib/LWP/Protocol/socks4.pm
 LWP::UserAgent --> 
-	Source: http://cpansearch.perl.org/src/GAAS/libwww-perl-6.04/lib/LWP/UserAgent.pm
+	http://cpansearch.perl.org/src/GAAS/libwww-perl-6.04/lib/LWP/UserAgent.pm
 LWP::Simple --> 
-	Source: http://cpansearch.perl.org/src/GAAS/libwww-perl-6.04/lib/LWP/Simple.pm
-JSON        --> 
-	Source: http://cpansearch.perl.org/src/MAKAMAKA/JSON-2.53/lib/JSON.pm
+	http://cpansearch.perl.org/src/GAAS/libwww-perl-6.04/lib/LWP/Simple.pm
+JSON --> 
+	http://cpansearch.perl.org/src/MAKAMAKA/JSON-2.53/lib/JSON.pm
 
 bitotter_vwap.pl
 LWP::Protocol::socks --> 
 	http://search.cpan.org/~scr/LWP-Protocol-socks-1.6/lib/LWP/Protocol/socks4.pm
 LWP::UserAgent --> 
-	Source: http://cpansearch.perl.org/src/GAAS/libwww-perl-6.04/lib/LWP/UserAgent.pm
+	http://cpansearch.perl.org/src/GAAS/libwww-perl-6.04/lib/LWP/UserAgent.pm
 LWP::Simple --> 
-	Source: http://cpansearch.perl.org/src/GAAS/libwww-perl-6.04/lib/LWP/Simple.pm
-JSON        --> 
-	Source: http://cpansearch.perl.org/src/MAKAMAKA/JSON-2.53/lib/JSON.pm
+	http://cpansearch.perl.org/src/GAAS/libwww-perl-6.04/lib/LWP/Simple.pm
+JSON --> 
+	http://cpansearch.perl.org/src/MAKAMAKA/JSON-2.53/lib/JSON.pm
 
 bitotter_market_data.pl
 LWP::UserAgent --> 
-	Source: http://cpansearch.perl.org/src/GAAS/libwww-perl-6.04/lib/LWP/UserAgent.pm
+	http://cpansearch.perl.org/src/GAAS/libwww-perl-6.04/lib/LWP/UserAgent.pm
 LWP::Simple --> 
-	Source: http://cpansearch.perl.org/src/GAAS/libwww-perl-6.04/lib/LWP/Simple.pm
+	http://cpansearch.perl.org/src/GAAS/libwww-perl-6.04/lib/LWP/Simple.pm
 POE::Component::IRC --> 
-	Source: http://cpansearch.perl.org/src/BINGOS/POE-Component-IRC-6.82/lib/POE/Component/IRC.pm
-JSON        --> 
-	Source: http://cpansearch.perl.org/src/MAKAMAKA/JSON-2.53/lib/JSON.pm
+	http://cpansearch.perl.org/src/BINGOS/POE-Component-IRC-6.82/lib/POE/Component/IRC.pm
+JSON --> 
+	http://cpansearch.perl.org/src/MAKAMAKA/JSON-2.53/lib/JSON.pm
 
->>>>> !!!  Depreacated until further notice: 2013.03.14 !!! <<<<<<
+bitotter.pl
+LWP::UserAgent	--> http://search.cpan.org/~gaas/libwww-perl-6.04/lib/LWP/UserAgent.pm
+Term::ReadKey	--> http://search.cpan.org/dist/TermReadKey/ReadKey.pm
+CGI		--> http://search.cpan.org/~markstos/CGI.pm-3.60/lib/CGI.pm
+GPG		--> http://search.cpan.org/~miles/GPG-0.06/GPG.pm 
 
- ####bitotter.pl -- depreacated since 2013.03.09, no outside facing service at this time -- 
- #### ----may return some day soon ----:
- ####GPG --> http://search.cpan.org/~miles/GPG-0.06/GPG.pm  
- ####
- ####ATTENTION -- The GPG perl module will require a change before it will work
- ####properly with bitotter.pl.  As you can see below from the unified diff, one 
- ####simply has to remove the --quiet line from the module.
- ####Run a `find / -name "GPG.pm"` to find the file if needed.
- ####<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
- ####[mod6@localhost:~]% cat GPG.pm.patch
- ####--- GPG.pm      2012-07-30 12:48:22.839132701 -0700
- ####+++ GPG.pm.orig 2012-07-30 12:46:56.674621512 -0700
- ####@@ -25,7 +25,6 @@
- ####        $self->{'COMMAND'} .= " --batch";
- ####        $self->{'COMMAND'} .= " --no-comment";
- ####        $self->{'COMMAND'} .= " --no-version";
- ####-       $self->{'COMMAND'} .= " --quiet";
- ####        $self->{'COMMAND'} .= ' '; # so i dont forget the spaces later :-)
- ####
- ####       if ($self->{'debug'}) {
- ####<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
- ####LWP::UserAgent --> http://search.cpan.org/~gaas/libwww-perl-6.04/lib/LWP/UserAgent.pm
- ####Term::ReadKey  --> http://search.cpan.org/dist/TermReadKey/ReadKey.pm
- ####CGI            --> http://search.cpan.org/~markstos/CGI.pm-3.60/lib/CGI.pm
+####################################################
+
+ATTENTION -- The GPG perl module will require a change before it will work
+properly with bitotter.pl.  As you can see below from the unified diff, one 
+simply has to remove the --quiet line from the module.
+Run a `find / -name "GPG.pm"` to find the file if needed.
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+[mod6@localhost:~]% cat GPG.pm.patch
+--- GPG.pm      2012-07-30 12:48:22.839132701 -0700
++++ GPG.pm.orig 2012-07-30 12:46:56.674621512 -0700
+@@ -25,7 +25,6 @@
+        $self->{'COMMAND'} .= " --batch";
+        $self->{'COMMAND'} .= " --no-comment";
+        $self->{'COMMAND'} .= " --no-version";
+-       $self->{'COMMAND'} .= " --quiet";
+        $self->{'COMMAND'} .= ' '; # so i dont forget the spaces later :-)
+
+       if ($self->{'debug'}) {
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 ####################################################
 WARNING: For some reason I havnen't figured out yet, tor now opens a socket 
@@ -135,34 +134,34 @@ NOTE: BitOTTer perl tools will look for localhost:9150 to use for a Tor Socket.
       Find me on irc.freenode.net or send email to modsix at gmail dot com -- mod6 
 
 ####################################################
- ####BitOTTer Trade Tool for MPEx:
- ####This perl tool will allow the user to send clearsigned/encrypted commands
- ####over Tor (or not) to MPEx to be executed.
- ####
- ####This tool makes some assumptions about the location of your local .gnupg
- ####directory, and a tmp directory that is needed.  Please reivew these
- ####variable settings in the bitotter.pl script:
- ####$PATH_TO_GPG_HOME = "~/.gnupg";  # This is the default
- ####$TMP_DIR = "/tmp";               # This is the default
- ####
- ####Please ensure that he MPEx public PGP key is imported to your GPG keyring 
- ####before running bitotter.pl.  If you do not have the MPEx key imported 
- ####to your keyring, bitotter.pl will take notice and exit accordingly. 
- ####
- ####[mod6@localhost:~]% ./bitotter.pl "STAT" usetor
- ####..::[ BitOTTer (for UNIX) ]::..
- ####MPEx Key Found: XXXXXXXXXXXX
- ####GPG Public Key username [email|name|keyid|org]:
- ####foo 
- ####Public Key Found: XXXXXXXXXXXX for user: foo (foo's Public Key) <foo@bar.com>
- ####Was this the correct public key id? [Y/N]:
- ####Y
- ####Enter GPG Passphrase [will not echo back to terminal]:
- ####TOR ENABLED - Connecting to MPEx via Tor Socket...
- ####DECRYPTED ORDER FROM MPEx:
- ####-----BEGIN PGP SIGNED MESSAGE-----
- ####... All the good stuff here ...
- ####-----END PGP SIGNED MESSAGE-----
+BitOTTer Trade Tool for MPEx:
+This perl tool will allow the user to send clearsigned/encrypted commands
+over Tor (or not) to MPEx to be executed.
+
+This tool makes some assumptions about the location of your local .gnupg
+directory, and a tmp directory that is needed.  Please reivew these
+variable settings in the bitotter.pl script:
+$PATH_TO_GPG_HOME = "~/.gnupg";  # This is the default
+$TMP_DIR = "/tmp";               # This is the default
+
+Please ensure that he MPEx public PGP key is imported to your GPG keyring 
+before running bitotter.pl.  If you do not have the MPEx key imported 
+to your keyring, bitotter.pl will take notice and exit accordingly. 
+
+[mod6@localhost:~]% ./bitotter.pl "STAT" usetor
+..::[ BitOTTer (for UNIX) ]::..
+MPEx Key Found: XXXXXXXXXXXX
+GPG Public Key username [email|name|keyid|org]:
+foo 
+Public Key Found: XXXXXXXXXXXX for user: foo (foo's Public Key) <foo@bar.com>
+Was this the correct public key id? [Y/N]:
+Y
+Enter GPG Passphrase [will not echo back to terminal]:
+TOR ENABLED - Connecting to MPEx via Tor Socket...
+DECRYPTED ORDER FROM MPEx:
+-----BEGIN PGP SIGNED MESSAGE-----
+... All the good stuff here ...
+-----END PGP SIGNED MESSAGE-----
 
 ####################################################
 BitOTTer Depth Tool for MPEx (bitotter_depth.pl) v0.02 beta
@@ -319,6 +318,3 @@ S => Price: 18101976    Volume: 54
 B => Price: 11870148    Volume: 1000
 
 ...
-
-
-

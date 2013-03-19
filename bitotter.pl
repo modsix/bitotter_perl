@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -w 
 
 #
 # Copyright (c) 2012, 2013
@@ -44,9 +44,9 @@ use CGI;
 
 ## Some Globals we need set: Make sure that $TMP_DIR and $PATH_TO_GPG_HOME are set correctly to your environment.
 my $TMP_DIR = "/tmp";
-my $PATH_TO_GPG_HOME = '~/.gnupg/';
-my $URL = 'http://mpex.coinbr.com';
-my $MPEX_GPG_KEY_ID = "9214FC6BF1B69921"; # as of 20120730
+my $PATH_TO_GPG_HOME = "~/.gnupg/";
+my $URL = "http://mpex.co";
+my $MPEX_PGP_KEY_ID = "14460196CFE0F3E1"; # as of 20120210
 my $BEGIN_PGP_MSG = "-----BEGIN PGP MESSAGE-----";
 my $END_PGP_MSG = "-----END PGP MESSAGE-----";
 my $GPG = new GPG(homedir => $PATH_TO_GPG_HOME);
@@ -60,16 +60,16 @@ if(!$ARGV[0] && !$ARGV[1]) {
 } else {
 
 	checkForMPExKey();
-	my $GPG_PUB_KEY_ID = getGPGUserID();
+	my $PGP_PUB_KEY_ID = getGPGUserID();
 	my $PASSPHRASE = getPassphrase();
 
 	my $MPEX_CMD = $ARGV[0]; # STAT|BUY|SELL|CANCEL etc.
 
 	## Clearsign the cmd to MPEx
-	$clearsigned_mpex_cmd = $GPG->clearsign($GPG_PUB_KEY_ID, $PASSPHRASE, $MPEX_CMD) or die "$! Problem Clearsigning MPEx cmd! Double check GPG keys and Passphrase!\n";
+	$clearsigned_mpex_cmd = $GPG->clearsign($PGP_PUB_KEY_ID, $PASSPHRASE, $MPEX_CMD) or die "$! Problem Clearsigning MPEx cmd! Double check GPG keys and Passphrase!\n";
 
 	## Encrypt the cmd to MPEx
-	$encrypted_mpex_cmd = $GPG->encrypt($clearsigned_mpex_cmd, $MPEX_GPG_KEY_ID) or die "$! Problem encrypting cmd to send to MPEx!\n";
+	$encrypted_mpex_cmd = $GPG->encrypt($clearsigned_mpex_cmd, $MPEX_PGP_KEY_ID) or die "$! Problem encrypting cmd to send to MPEx!\n";
 
 	## Send command to MPEx
 	sendToMPEx();
@@ -96,14 +96,14 @@ sub checkForMPExKey {
 		$key_id = $_->{'key_id'};
 		if(!$key_id) {
 			next; # some entries could be null.
-		} elsif($key_id =~ m/$MPEX_GPG_KEY_ID/) { 
+		} elsif($key_id =~ m/$MPEX_PGP_KEY_ID/) { 
 			$mpex_key_found = "1";
 			print "MPEx Key Found: $key_id\n";	
 		}
 	}
 
 	if(!$mpex_key_found) { 
-		print "Error: MPEx Public Key: $MPEX_GPG_KEY_ID Not Found on Users Keyring. Please locate on gpg.mit.edu, import and try again.\n";
+		print "Error: MPEx Public Key: $MPEX_PGP_KEY_ID Not Found on Users Keyring. Please locate on gpg.mit.edu, import and try again.\n";
 		print "     : for more info check here: http://mpex.co/faq.html#6\n";
 		print "     :                   & here: http://mpex.co/faq.html#8\n";
 		exit;
@@ -130,7 +130,7 @@ sub getGPGUserID {
 			next; # some entries could be null
 		} elsif($uid =~ m/$search_key/) { 
 			print "Public Key Found: $_->{'key_id'} for user: $uid\n";
-			$GPG_PUB_KEY_ID	= $_->{'key_id'};
+			$PGP_PUB_KEY_ID	= $_->{'key_id'};
 		}
 	}
 
@@ -140,20 +140,20 @@ sub getGPGUserID {
 	chomp($correct_key);	
 	ReadMode(0); # normal mode
 
-	if($correct_key =~ m/n|N/) { 
+	if($correct_key =~ m/n/i) { 
 		print "Details of PGP Public Key found on KeyRing:\n";
-		print "\tPublic Key Id [long format]: $GPG_PUB_KEY_ID\n";
+		print "\tPublic Key Id [long format]: $PGP_PUB_KEY_ID\n";
 		print "Would you like to try again? Answer 'N' if you wish to return to the terminal. [Y/N]\n";
 		my $try_again = ReadLine 0;
 		chomp($try_again);
-		if($try_again =~ m/y|Y/) { 
+		if($try_again =~ m/y/i) { 
 			getGPGUserID();
 		} else { 
 			print "Exiting via request.\n";
 			exit;
 		}
-	} elsif($correct_key =~ m/y|Y/) {
-		return $GPG_PUB_KEY_ID;
+	} elsif($correct_key =~ m/y/i) {
+		return $PGP_PUB_KEY_ID;
 	} else {
 		print "Unknown repsonse, please try again.\n";	
 		getGPGUserID();
@@ -179,7 +179,7 @@ sub sendToMPEx {
 	if($ARGV[1] eq "usetor") {
 		print "TOR ENABLED - Connecting to MPEx via Tor Socket...\n";
 		my $ua = LWP::UserAgent->new(agent => q{Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; YPC 3.2.0; .NET CLR 1.1.4322)},);
-		$ua->proxy([qw/ http https /] => 'socks://localhost:9150'); # Tor proxy - 9050 default
+		$ua->proxy([qw/ http https /] => 'socks://localhost:9150'); # Tor proxy - 9150 new default port number !?
 		$ua->cookie_jar({});
 		$response = $ua->post($URL, {'msg' => $encrypted_mpex_cmd});
 		$web_content = $response->decoded_content();	
@@ -199,16 +199,16 @@ sub sendToMPEx {
 sub parseResponse { 
 	## Open the saved web-content reply file from MPEx for parsing out the PGP message.
 	## Then check to make sure what we grabbed was indeed a PGP message.
-	open HTML_RES, "<$TMP_DIR/mpex_reply.txt" or die "$! Couldn't open the $TMP_DIR/mpex_reply.txt file for reading!  Exiting! Locate file and try to decrypt by hand.\n";
-	my $html = "";
-	while(<HTML_RES>) { $html .= $_; }
-	close HTML_RES;
-	my $PGP_REPLY = "";
-	if(!$html) { 
-		print "Error: HTML wasn't correctly read from $TMP_DIR/mpex_reply.txt! Exiting! Check output file - try to decrypt by hand.\n";
+	open PGP_RES, "<$TMP_DIR/mpex_reply.txt" or die "$! Couldn't open the $TMP_DIR/mpex_reply.txt file for reading!  Exiting! Locate file and try to decrypt by hand.\n";
+	my $pgp = "";
+	while(<PGP_RES>) { $pgp .= $_; }
+	close PGP_RES;
+
+	if(!$pgp) { 
+		print "Error: Response wasn't correctly read from $TMP_DIR/mpex_reply.txt! Exiting! Check output file - try to decrypt by hand.\n";
 		exit;
-	} elsif($html =~ m/$BEGIN_PGP_MESSAGE(.*)$END_PGP_MSG/sm) {  # Grab the PGP message.
-		return $+;
+	} elsif($pgp =~ m/$BEGIN_PGP_MSG/) {
+		return $pgp;
 	} else {
 		print "Error: PGP MESSAGE REGEX FAILURE!\n";
 		print "Parsed response messaeg from MPEx was not a PGP Message.\n";
