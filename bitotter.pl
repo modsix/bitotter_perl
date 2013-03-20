@@ -34,7 +34,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-# BitOTTer for MPEx [Perl Version for UNIX] (bitotter.pl)
+# BitOTTer for MPEx [Perl Version for UNIX] (bitotter.pl) v0.02
 # Copyright (c) 2012, 2013 BitOTTer.com <modsix@gmail.com> 0xD655A630A13E8C69 
 
 use GPG;
@@ -46,7 +46,7 @@ use CGI;
 my $TMP_DIR = "/tmp";
 my $PATH_TO_GPG_HOME = "~/.gnupg/";
 my $URL = "http://mpex.co";
-my $MPEX_PGP_KEY_ID = "14460196CFE0F3E1"; # as of 20120210
+my $MPEX_PGP_KEY_ID = "14460196CFE0F3E1"; # as of 20130310
 my $BEGIN_PGP_MSG = "-----BEGIN PGP MESSAGE-----";
 my $END_PGP_MSG = "-----END PGP MESSAGE-----";
 my $GPG = new GPG(homedir => $PATH_TO_GPG_HOME);
