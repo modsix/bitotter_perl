@@ -1,4 +1,4 @@
-#!/usr/bin/perl -w 
+#!/usr/bin/perl
 
 #
 # Copyright (c) 2012, 2013
@@ -69,7 +69,7 @@ if(!$ARGV[0] && !$ARGV[1]) {
 	$clearsigned_mpex_cmd = $GPG->clearsign($PGP_PUB_KEY_ID, $PASSPHRASE, $MPEX_CMD) or die "$! Problem Clearsigning MPEx cmd! Double check GPG keys and Passphrase!\n";
 
 	## Encrypt the cmd to MPEx
-	$encrypted_mpex_cmd = $GPG->encrypt($clearsigned_mpex_cmd, $MPEX_PGP_KEY_ID) or die "$! Problem encrypting cmd to send to MPEx!\n";
+	$encrypted_mpex_cmd = $GPG->encrypt($clearsigned_mpex_cmd, $MPEX_PGP_KEY_ID) or die "$! Problem encrypting cmd to send to MPEx! Did you sign the MPEx public key?\n"; 
 
 	## Send command to MPEx
 	sendToMPEx();
@@ -175,7 +175,7 @@ sub sendToMPEx {
 	my $web_content;
 	my $response;
 
-	## Check to see if we should attempt to connect to MPEx via Tor Socket on port 9050
+	## Check to see if we should attempt to connect to MPEx via Tor Socket on port 9150
 	if($ARGV[1] eq "usetor") {
 		print "TOR ENABLED - Connecting to MPEx via Tor Socket...\n";
 		my $ua = LWP::UserAgent->new(agent => q{Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; YPC 3.2.0; .NET CLR 1.1.4322)},);
@@ -190,7 +190,7 @@ sub sendToMPEx {
 		$web_content  = $response->decoded_content();
 	}
 
-	## Write out the web-content for safe keeping, incase of failure (then a person could decrypt by hand).
+	## Write out the web-content for safe keeping - a person could decrypt by hand.
 	open RES, ">$TMP_DIR/mpex_reply.txt" or die "$! Couldn't open the $TMP_DIR/mpex_reply.txt file for writing! Exiting!  Check $TMP_DIR permissions.\n";
 	print RES $web_content;	
 	close RES;
