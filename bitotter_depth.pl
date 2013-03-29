@@ -72,7 +72,7 @@ sub getDepth {
 	if($ARGV[2] =~ m/usetor/) {
 		print "TOR ENABLED - Connecting to pastebin via Tor Socket...\n";
 		my $ua = LWP::UserAgent->new(agent => q{Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; YPC 3.2.0; .NET CLR 1.1.4322)});
-		$ua->proxy([qw/ http https /] => 'socks://localhost:9150'); # Tor proxy - 9150 default nao
+		$ua->proxy([qw/ http https /] => 'socks://localhost:9050'); # Tor proxy - 9150 default nao
 		$ua->cookie_jar({});
 		my $response = $ua->get($pastebin_raw_url);
 		$html = $response->content;

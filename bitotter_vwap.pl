@@ -43,52 +43,67 @@
 ### The JSON data can be retrieved from pastebin either via naked connection or Tor (if setup).  
 ### 
 ### Ex:
-### mod6@localhost ~$ ./bitotter_vwap.pl http://pastebin.com/raw.php?i=SoMeKeYId MPSIC usetor
-### or 
-### mod6@localhost ~$ ./bitotter_vwap.pl http://pastebin.com/raw.php?i=SoMeKeYId S.MPOE no-tor
-### or 
-### mod6@localhost ~$ ./bitotter_vwap.pl http://pastebin.com/SoMeKeYId S.MPOE 
+### With Pastebin via mpexbot on irc.freenode.net:
+### 	mod6@localhost ~$ ./bitotter_vwap.pl MPSIC http://pastebin.com/SoMeKeYId 
+### 	mod6@localhost ~$ ./bitotter_vwap.pl MPSIC http://pastebin.com/SoMeKeYId usetor
+### 	mod6@localhost ~$ ./bitotter_vwap.pl MPSIC http://pastebin.com/SoMeKeYId no-tor
+### Without Pastebin, request VWAP feed from mpex.co directly:
+### 	mod6@localhost ~$ ./bitotter_vwap.pl MPSIC usetor
+### 	mod6@localhost ~$ ./bitotter_vwap.pl MPSIC no-tor
+
+### See perl_tools README
 
 use JSON;
 use LWP::UserAgent; 
 use LWP::Simple qw(get);
 
 my $TMP_DIR = "/tmp";
+my $mpex_vwap_feed = "http://mpex.co/mpex-vwap.php";
 my $pastebin_raw_url = "";
+my $use_pastebin = "FALSE";
 
-if(($ARGV[0] =~ m/http\:\/\/pastebin\.com\/raw\.php\?i\=(.*)/) or ($ARGV[0] =~ m/http\:\/\/pastebin\.com\/(.*)/) and $ARGV[1] ne "") {
+if($ARGV[0] =~ m/^help$|^h(\w+)$/i) { 
+	usage();
+} elsif(($ARGV[1] =~ m/http\:\/\/pastebin\.com\/raw\.php\?i\=(.*)/) or ($ARGV[1] =~ m/http\:\/\/pastebin\.com\/(.*)/) and $ARGV[1] ne "") {
 	$pastebin_key = $+;	
 	$pastebin_raw_url = "http://pastebin.com/raw.php?i=" . $pastebin_key;
+	$use_pastebin = "TRUE";
 	getVWAP();
 	displayVWAP();
-} else {
-	print "Usage: ./bitotter_vwap.pl <pastebin-raw-url> <MPSIC> [usetor|no-tor]\n";
+} else { 
+	getVWAP();
+	displayVWAP();
+}
+
+sub usage {
+	print "Usage: ./bitotter_vwap.pl <MPSIC> [pastebin-raw-url] [usetor|no-tor]\n";
 	exit 1;
 }
 
 sub getVWAP {
 	my $html = "";
 
-	if($ARGV[2] =~ m/usetor/) {
+	if(($ARGV[1] =~ m/usetor/i) or ($ARGV[2] =~ m/usetor/i)) {
 		print "TOR ENABLED - Connecting to pastebin via Tor Socket...\n";
 		my $ua = LWP::UserAgent->new(agent => q{Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; YPC 3.2.0; .NET CLR 1.1.4322)});
 		$ua->proxy([qw/ http https /] => 'socks://localhost:9150'); # Tor proxy - 9150 default nao !?
 		$ua->cookie_jar({});
-		my $response = $ua->get($pastebin_raw_url);
+		my $response;
+		if($use_pastebin eq "TRUE") { $response = $ua->get($pastebin_raw_url); } else { $response = $ua->get($mpex_vwap_feed); }
 		$html = $response->content;
-	} elsif($ARGV[2] eq "" or $ARGV[2] eq "no-tor") {
+
+	} elsif(($ARGV[1] eq "" or $ARGV[1] =~ m/no-tor/i) or ($ARGV[2] eq "" or $ARGV[2] =~ m/no-tor/i)) {
 		print "TOR DISABLED! Naked connection to pastebin in progress...\n";
-		my $user_agent = LWP::UserAgent->new();
-		$user_agent->timeout(30);
-		my $request = HTTP::Request->new('GET', $pastebin_raw_url);
-		my $response = $user_agent->request($request);
+		my $ua = LWP::UserAgent->new(agent => q{Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; YPC 3.2.0; .NET CLR 1.1.4322)});
+		$ua->timeout(30);
+		my $response;
+		if($use_pastebin eq "TRUE") { $response = $ua->get($pastebin_raw_url); } else { $response = $ua->get($mpex_vwap_feed); }
 		$html = $response->content;
 	}	
 
 	open RES, ">$TMP_DIR/pastebin_vwap.txt" or die "$! Couldn't open the $TMP_DIR/pastebin_vwap.txt file for writing! Exiting! Check $TMP_DIR permissions.\n";
 	print RES $html;	
 	close RES;
-	
 }
 
 sub displayVWAP {
@@ -100,30 +115,19 @@ sub displayVWAP {
 	my $json_vwap_obj = new JSON;
 	my $mpsic = $json_vwap_obj->allow_unknown->relaxed->decode($json_vwap_data);
 
-	print "..::[ BitOTTer VWAP Tool for MPEx: $ARGV[1] ]::..\n";
+	my @interval = ('1d', '7d', '30d');
+	my @stat_type = ('avg', 'min', 'max', 'vsh', 'vsa', 'cnt');
+
+	print "..::[ BitOTTer VWAP Tool for MPEx: $ARGV[0] ]::..\n";
 	while (my ($code, $rolling_window) = each %$mpsic) {
-		if($code eq $ARGV[1]) {
+		if($code eq $ARGV[0]) {
 			print "$code:\n";
-			print "\t1d avg: => $rolling_window->{'1d'}->{'avg'}\n";
-			print "\t1d min: => $rolling_window->{'1d'}->{'min'}\n";
-			print "\t1d max: => $rolling_window->{'1d'}->{'max'}\n";
-			print "\t1d vsh: => $rolling_window->{'1d'}->{'vsh'}\n";
-			print "\t1d vsa: => $rolling_window->{'1d'}->{'vsa'}\n";
-			print "\t1d cnt: => $rolling_window->{'1d'}->{'cnt'}\n";
-			print "\n";
-			print "\t7d avg: => $rolling_window->{'7d'}->{'avg'}\n";
-			print "\t7d min: => $rolling_window->{'7d'}->{'min'}\n";
-			print "\t7d max: => $rolling_window->{'7d'}->{'max'}\n";
-			print "\t7d vsh: => $rolling_window->{'7d'}->{'vsh'}\n";
-			print "\t7d vsa: => $rolling_window->{'7d'}->{'vsa'}\n";
-			print "\t7d cnt: => $rolling_window->{'7d'}->{'cnt'}\n";
-			print "\n";
-			print "\t30d avg: => $rolling_window->{'30d'}->{'avg'}\n";
-			print "\t30d min: => $rolling_window->{'30d'}->{'min'}\n";
-			print "\t30d max: => $rolling_window->{'30d'}->{'max'}\n";
-			print "\t30d vsh: => $rolling_window->{'30d'}->{'vsh'}\n";
-			print "\t30d vsa: => $rolling_window->{'30d'}->{'vsa'}\n";
-			print "\t30d cnt: => $rolling_window->{'30d'}->{'cnt'}\n";
+			foreach $range (@interval) {
+				foreach (@stat_type) {
+					print "\t$range $_: => $rolling_window->{$range}->{$_}\n";
+				}	
+				print "\n";
+			}
 		} 
 	}
 }

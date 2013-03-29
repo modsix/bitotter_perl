@@ -40,7 +40,7 @@ BitOTTer Market Data Tool for MPEx (bitotter_market_depth.pl)
 	-- Will connect to IRC and allow botcontroller to issue DEPTH|VWAP commands to mpexbot 
 	-- Parsed output prints to terminal window where script is launched (STDOUT).
 BitOTTer Depth Tool for MPEx (bitotter_depth.pl) -- v0.02 : Support for mpexbot
-BitOTTer VWAP Tool for MPEx [Volume Weighted Average Price] (bitotter_vwap.pl) -- v0.02 : Support for mpexbot
+BitOTTer VWAP Tool for MPEx [Volume Weighted Average Price] (bitotter_vwap.pl) -- v0.03 : Support for mpexbot
 BitOTTer (bitotter.pl) MPEx Trade Tool -- v0.02
 
 ####################################################
@@ -238,36 +238,36 @@ B => Price: 544 Volume: 1000
 ...
 
 ####################################################
-BitOTTer VWAP Tool for MPEx [Volume Weighted Average Price] (bitotter_vwap.pl) v0.02
+BitOTTer VWAP Tool for MPEx [Volume Weighted Average Price] (bitotter_vwap.pl) v0.03
 This tool will display the rolling VWAP per MPSIC in 1/7/30 day format 
 from pastebin URL via mpexbot.
 
-Usage: ./bitotter_vwap.pl <pastebin-raw-url> <MPSIC> [usetor|no-tor]
+Usage: ./bitotter_vwap.pl <MPSIC> [pastebin-raw-url] [usetor|no-tor]
 Output Sample:
 ~$ ./bitotter_vwap.pl http://pastebin.com/raw.php?i=SoMeKeYId S.MPOE usetor
 TOR ENABLED - Connecting to pastebin via Tor Socket...
 ..::[ BitOTTer VWAP Tool for MPEx: S.MPOE ]::..
 S.MPOE:
-	1d avg: => 73051.3497931
-	1d min: => 71102
-	1d max: => 76717
-	1d vsh: => 72966
-	1d vsa: => 5330264789
-	1d cnt: => 18
+	1d avg: => 67091.1679749
+	1d min: => 63570
+	1d max: => 68314
+	1d vsh: => 710511
+	1d vsa: => 47669012849
+	1d cnt: => 69
 
-	7d avg: => 74601.5589027
-	7d min: => 67600
-	7d max: => 76718
-	7d vsh: => 514764
-	7d vsa: => 38402196867
-	7d cnt: => 38
+	7d avg: => 66404.9547218
+	7d min: => 60000
+	7d max: => 71369
+	7d vsh: => 2322597
+	7d vsa: => 154231948622
+	7d cnt: => 326
 
-	30d avg: => 69740.4746779
-	30d min: => 61614
+	30d avg: => 73244.1915426
+	30d min: => 60000
 	30d max: => 78628
-	30d vsh: => 42106894
-	30d vsa: => 2936554774774
-	30d cnt: => 3361
+	30d vsh: => 17452785
+	30d vsa: => 1278315127492
+	30d cnt: => 1056
 
 ####################################################
 
