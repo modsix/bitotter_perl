@@ -104,16 +104,16 @@ Run a `find / -name "GPG.pm"` to find the file if needed.
 
 ####################################################
 WARNING: For some reason I havnen't figured out yet, tor now opens a socket 
-	on 9150 by default for whatever reason, and if you try to change it to 9050 
-	as it was before, it gets tempermental.  So to avoid some stuff, just set 
-	up tor to listen on 9150 now.  This is the default, so if you keep up with all 
+	on 9150 by default and if you try to change it to 9050 as it was before, 
+	it gets tempermental.  So to avoid some stuff, just set up tor to listen 
+	on 9150 now.  This is the default, so if you keep up with all 
 	the latest versions (AS YOU SHOULD) this shouldn't be an issue.
 
 NOTE: BitOTTer perl tools will look for localhost:9150 to use for a Tor Socket.
       If you wish to try to run these tools with a Tor socket, make sure tor is 
       setup to listen on localhost:9150
 
-      How do I set it up to use 9050?  This is how to do just that (taken from the TorFAQ): 
+      How do I set it up to use 9150? This is how to do just that (taken from the TorFAQ): 
       "In Vidalia, go to Settings->Advanced and uncheck the box that says 
 	'Configure ControlPort automatically'. 
       Your SOCKS port will then be on 9150."  This is taken from this page: 
