@@ -34,7 +34,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-# BitOTTer Market VWAP Tool for MPEx (bitotter_vwap.pl) v0.02 beta
+# BitOTTer Market VWAP Tool for MPEx (bitotter_vwap.pl) v0.03 beta
 # Copyright (c) 2012, 2013 bitotter.com <modsix@gmail.com> 0xD655A630A13E8C69 
 
 ### New, revised version of the original bitotter_vwap.pl: 
@@ -91,7 +91,6 @@ sub getVWAP {
 		my $response;
 		if($use_pastebin eq "TRUE") { $response = $ua->get($pastebin_raw_url); } else { $response = $ua->get($mpex_vwap_feed); }
 		$html = $response->content;
-
 	} elsif(($ARGV[1] eq "" or $ARGV[1] =~ m/no-tor/i) or ($ARGV[2] eq "" or $ARGV[2] =~ m/no-tor/i)) {
 		print "TOR DISABLED! Naked connection to pastebin in progress...\n";
 		my $ua = LWP::UserAgent->new(agent => q{Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; YPC 3.2.0; .NET CLR 1.1.4322)});
@@ -123,8 +122,8 @@ sub displayVWAP {
 		if($code eq $ARGV[0]) {
 			print "$code:\n";
 			foreach $range (@interval) {
-				foreach (@stat_type) {
-					print "\t$range $_: => $rolling_window->{$range}->{$_}\n";
+				foreach $type (@stat_type) {
+					print "\t$range $type: => $rolling_window->{$range}->{$type}\n";
 				}	
 				print "\n";
 			}

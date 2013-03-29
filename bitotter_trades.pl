@@ -35,7 +35,7 @@
 #
 
 # BitOTTer Trade History RSS Tool for MPEx (bitotter_trades.pl)
-# Copyright (c) 2012 bitotter.com <modsix@gmail.com> 0xD655A630A13E8C69
+# Copyright (c) 2012, 2013 bitotter.com <modsix@gmail.com> 0xD655A630A13E8C69
 
 use LWP::UserAgent; 
 use LWP::Simple qw(get);

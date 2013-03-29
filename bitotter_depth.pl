@@ -34,7 +34,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-# BitOTTer Market Depth Tool for MPEx (bitotter_depth.pl) v0.02 beta
+# BitOTTer Market Depth Tool for MPEx (bitotter_depth.pl) v0.03 beta
 # Copyright (c) 2012, 2013 bitotter.com <modsix@gmail.com> 0xD655A630A13E8C69 
 
 ### New, revised version of the original bitotter_depth.pl: 
@@ -42,46 +42,57 @@
 ### An IRC private message request to mpexbot with `$depth' on freenode will return the requesting user a pastebin raw URL.  
 ### The JSON data can be retrieved from pastebin either via naked connection or Tor (if setup).  
 ### 
-### Ex:
-### mod6@localhost ~$ ./bitotter_depth.pl http://pastebin.com/raw.php?i=SoMeKeYId ALL usetor
-### or 
-### mod6@localhost ~$ ./bitotter_depth.pl http://pastebin.com/raw.php?i=SoMeKeYId S.MPOE no-tor
-### or 
-### mod6@localhost ~$ ./bitotter_depth.pl http://pastebin.com/SoMeKeYId S.MPOE 
+### With Pastebin via mpexbot on irc.freenode.net:
+### 	mod6@localhost ~$ ./bitotter_depth.pl MPSIC http://pastebin.com/SoMeKeYId 
+### 	mod6@localhost ~$ ./bitotter_depth.pl MPSIC http://pastebin.com/SoMeKeYId usetor
+### 	mod6@localhost ~$ ./bitotter_depth.pl MPSIC http://pastebin.com/SoMeKeYId no-tor
+### Without Pastebin, request VWAP feed from mpex.co directly:
+### 	mod6@localhost ~$ ./bitotter_depth.pl MPSIC usetor
+### 	mod6@localhost ~$ ./bitotter_depth.pl MPSIC no-tor
 
 use JSON;
 use LWP::UserAgent; 
 use LWP::Simple qw(get);
 
 my $TMP_DIR = "/tmp";
+my $mpex_depth_feed = "http://mpex.co/mpex-mktdepth.php";
 my $pastebin_raw_url = "";
+my $use_pastebin = "FALSE";
 
-if(($ARGV[0] =~ m/http\:\/\/pastebin\.com\/raw\.php\?i\=(.*)/) or ($ARGV[0] =~ m/http\:\/\/pastebin\.com\/(.*)/) and $ARGV[1] ne "") {
+if($ARGV[0] =~ m/^help$|^h(\w+)$/i) { 
+	usage();
+} elsif(($ARGV[1] =~ m/http\:\/\/pastebin\.com\/raw\.php\?i\=(.*)/) or ($ARGV[1] =~ m/http\:\/\/pastebin\.com\/(.*)/) and $ARGV[1] ne "") {
 	$pastebin_key = $+;	
 	$pastebin_raw_url = "http://pastebin.com/raw.php?i=" . $pastebin_key;
+	$use_pastebin = "TRUE";
 	getDepth();
 	displayDepth();
 } else {
-	print "Usage: ./bitotter_depth.pl <pastebin-raw-url> <MPSIC|ALL> [usetor|no-tor]\n";
+	getDepth();
+	displayDepth();
+}
+
+sub usage {
+	print "Usage: ./bitotter_depth.pl <MPSIC|ALL> [pastebin-raw-url] [usetor|no-tor]\n";
 	exit 1;
 }
 
 sub getDepth {
 	my $html = "";
 
-	if($ARGV[2] =~ m/usetor/) {
+	if(($ARGV[1] =~ m/usetor/i) or ($ARGV[2] =~ m/usetor/i)) {
 		print "TOR ENABLED - Connecting to pastebin via Tor Socket...\n";
 		my $ua = LWP::UserAgent->new(agent => q{Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; YPC 3.2.0; .NET CLR 1.1.4322)});
-		$ua->proxy([qw/ http https /] => 'socks://localhost:9050'); # Tor proxy - 9150 default nao
+		$ua->proxy([qw/ http https /] => 'socks://localhost:9150'); # Tor proxy - 9150 default nao
 		$ua->cookie_jar({});
-		my $response = $ua->get($pastebin_raw_url);
+		if($use_pastebin eq "TRUE") { $response = $ua->get($pastebin_raw_url); } else { $response = $ua->get($mpex_depth_feed); }
 		$html = $response->content;
-	} elsif($ARGV[2] eq "" or $ARGV[2] eq "no-tor") {
+	} elsif(($ARGV[1] eq "" or $ARGV[1] eq "no-tor") or ($ARGV[2] eq "" or $ARGV[2] =~ m/no-tor/i)) {
 		print "TOR DISABLED! Naked connection to pastebin in progress...\n";
-		my $user_agent = LWP::UserAgent->new();
-		$user_agent->timeout(30);
-		my $request = HTTP::Request->new('GET', $pastebin_raw_url);
-		my $response = $user_agent->request($request);
+		my $ua = LWP::UserAgent->new(agent => q{Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; YPC 3.2.0; .NET CLR 1.1.4322)});
+		$ua->timeout(30);
+		my $response;
+		if($use_pastebin eq "TRUE") { $response = $ua->get($pastebin_raw_url); } else { $response = $ua->get($mpex_depth_feed); }
 		$html = $response->content;
 	}	
 
@@ -99,9 +110,9 @@ sub displayDepth {
 	my $json_depth_obj = new JSON;
 	my $mpsic = $json_depth_obj->allow_unknown->relaxed->decode($json_depth_data);
 
-	print "..::[ BitOTTer Market Depth for MPEx: $ARGV[1] ]::..\n";
+	print "..::[ BitOTTer Market Depth for MPEx: $ARGV[0] ]::..\n";
 	while (my ($code,$trade) = each %$mpsic) {
-		if($ARGV[1] eq "ALL") { 
+		if($ARGV[0] eq "ALL") { 
 			print "MPSIC => $code:\n";
 			while (my ($action,$act_ref) = each %$trade) {
 				my @sorted = sort { $b->[0] <=> $a->[0] } @$act_ref;
@@ -110,7 +121,7 @@ sub displayDepth {
 				}
 			}
 		} else {
-			if($code eq $ARGV[1]) {
+			if($code eq $ARGV[0]) {
 				while (my ($action,$act_ref) = each %$trade) {
 					my @sorted = sort { $b->[0] <=> $a->[0] } @$act_ref;
 					foreach (@sorted) {

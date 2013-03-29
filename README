@@ -39,9 +39,9 @@ BitOTTer Market Data Tool for MPEx (bitotter_market_depth.pl)
 	-- v0.01 alpha, works ok so far during testing.  Use with caution.
 	-- Will connect to IRC and allow botcontroller to issue DEPTH|VWAP commands to mpexbot 
 	-- Parsed output prints to terminal window where script is launched (STDOUT).
-BitOTTer Depth Tool for MPEx (bitotter_depth.pl) -- v0.02 : Support for mpexbot
-BitOTTer VWAP Tool for MPEx [Volume Weighted Average Price] (bitotter_vwap.pl) -- v0.03 : Support for mpexbot
-BitOTTer (bitotter.pl) MPEx Trade Tool -- v0.02
+BitOTTer Depth Tool for MPEx (bitotter_depth.pl) -- v0.03 beta
+BitOTTer VWAP Tool for MPEx [Volume Weighted Average Price] (bitotter_vwap.pl) -- v0.03 beta
+BitOTTer (bitotter.pl) MPEx Trade Tool -- v0.02 beta
 
 ####################################################
 REQUIRED LIBS per each of BitOTTer Perl Tools:  
@@ -168,10 +168,10 @@ BitOTTer Depth Tool for MPEx (bitotter_depth.pl) v0.02 beta
 This tool will display bid/ask depth for all MPSICs or 
 per MPSIC input by the user. 
 
-Usage: ./bitotter_depth.pl <pastebin-raw-url> <MPSIC|ALL> [usetor|no-tor]
+Usage: ./bitotter_depth.pl <MPSIC|ALL> [pastebin-raw-url] [usetor|no-tor]
 
 Output Sample:
-~$ ./bitotter_depth.pl http://pastebin.com/raw.php?i=SoMeKeYId S.MPOE usetor
+~$ ./bitotter_depth.pl S.MPOE http://pastebin.com/raw.php?i=SoMeKeYId usetor
 TOR ENABLED - Connecting to pastebin via Tor Socket...
 ..::[ BitOTTer Market Depth for MPEx: S.MPOE ]::..
 S => Price: 100000000	Volume: 10000
@@ -214,13 +214,23 @@ B => Price: 102	Volume: 5000000
 B => Price: 101	Volume: 10000000
 B => Price: 100	Volume: 10000000
 
+OR
+~$ ./bitotter_depth.pl S.MPOE usetor
+TOR ENABLED - Connecting to pastebin via Tor Socket...
+..::[ BitOTTer Market Depth for MPEx: S.MPOE ]::..
+S => Price: 100000000	Volume: 10000
+S => Price: 10000000	Volume: 2000
+S => Price: 1000000	Volume: 2000
+S => Price: 1000000	Volume: 100000
+...
+
 ---------------------------------------------------------
 NOTE: If you request to view ALL MPSICs instead of one in particular, 
 you may want to pipe output to a different file or perhaps `more` or `less` 
 as the data can be longer than one page.
 
 Output Sample:
-~$ ./bitotter_depth.pl http://pastebin.com/raw.php?i=SoMeKeYId ALL usetor | less 
+~$ ./bitotter_depth.pl ALL http://pastebin.com/raw.php?i=SoMeKeYId usetor | less 
 TOR ENABLED - Connecting to pastebin via Tor Socket...
 ..::[ BitOTTer Market Depth for MPEx: ALL ]::..
 MPSIC => O.BTCUSD.C630N:
@@ -244,7 +254,7 @@ from pastebin URL via mpexbot.
 
 Usage: ./bitotter_vwap.pl <MPSIC> [pastebin-raw-url] [usetor|no-tor]
 Output Sample:
-~$ ./bitotter_vwap.pl http://pastebin.com/raw.php?i=SoMeKeYId S.MPOE usetor
+~$ ./bitotter_vwap.pl S.MPOE http://pastebin.com/raw.php?i=SoMeKeYId usetor
 TOR ENABLED - Connecting to pastebin via Tor Socket...
 ..::[ BitOTTer VWAP Tool for MPEx: S.MPOE ]::..
 S.MPOE:
@@ -316,5 +326,4 @@ Output to StdOut:
 S => Price: 22000000    Volume: 231
 S => Price: 18101976    Volume: 54
 B => Price: 11870148    Volume: 1000
-
 ...
