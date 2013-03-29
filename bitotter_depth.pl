@@ -46,7 +46,7 @@
 ### 	mod6@localhost ~$ ./bitotter_depth.pl MPSIC http://pastebin.com/SoMeKeYId 
 ### 	mod6@localhost ~$ ./bitotter_depth.pl MPSIC http://pastebin.com/SoMeKeYId usetor
 ### 	mod6@localhost ~$ ./bitotter_depth.pl MPSIC http://pastebin.com/SoMeKeYId no-tor
-### Without Pastebin, request VWAP feed from mpex.co directly:
+### Without Pastebin, request depth feed from mpex.co directly:
 ### 	mod6@localhost ~$ ./bitotter_depth.pl MPSIC usetor
 ### 	mod6@localhost ~$ ./bitotter_depth.pl MPSIC no-tor
 
