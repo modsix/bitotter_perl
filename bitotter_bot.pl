@@ -34,7 +34,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-# BitOTTer Market Data Display Tool for MPEx (bitotter_market_data.pl)
+# BitOTTer IRC Bot for MPEx (bitotter_bot.pl)
 # Copyright (c) 2012, 2013 bitotter.com <modsix@gmail.com> 0xD655A630A13E8C69 
 
 use JSON;
@@ -55,16 +55,16 @@ my $req_mpsic = "";
 my $req_type = "";
 
 ## IRC Client Settings
-my $irc_client_name = "BitOTTer_Perl_Client";
+my $irc_client_name = "BitOTTer_Bot";
 my $irc_nick = "BitOTTer" . $$ % 1000;
 my $irc_username = "BitOTTer";
-my $irc_name = "BitOTTer Perl Client for MPEx IRC Bots";
+my $irc_name = "BitOTTer Bot for MPEx Market Data";
 my $irc_server = "irc.freenode.net";
 my $irc_channel = "#bitcoin-assets";
 my $irc_port = "6667";
 
 ## Spawn the IRC Client:
-my $irc = POE::Component::IRC->spawn() or die "Failed to launch the local IRC Client! Exiting! Need some help? Find mod6 on irc.freenode.net #BitOTTer or #bitcoin-assets\n $!";
+my $irc = POE::Component::IRC->spawn() or die "Failed to launch the local IRC Client! Exiting! Need some help? Find mod6 on irc.freenode.net #BitOTTer\n $!";
 
 ## Create the irc bot session.
 POE::Session->create(
@@ -210,7 +210,6 @@ sub displayVWAP {
 	while (my ($code, $rolling_window) = each %$mpsic) {
 		if($code eq $req_mpsic) {
 			print "$code:\n";
-	
 			foreach $range (@interval) {
 				foreach $type (@stat_type) {
 					print "\t$range $type: => $rolling_window->{$range}->{$type}\n";
