@@ -203,30 +203,20 @@ sub displayVWAP {
 	my $json_vwap_obj = new JSON;
 	my $mpsic = $json_vwap_obj->allow_unknown->relaxed->decode($json_vwap_data);
 
+	my @interval = ('1d', '7d', '30d');
+	my @stat_type = ('avg', 'min', 'max', 'vsh', 'vsa', 'cnt');
+
 	print "..::[ BitOTTer VWAP Tool for MPEx: $req_mpsic ]::..\n";
 	while (my ($code, $rolling_window) = each %$mpsic) {
 		if($code eq $req_mpsic) {
 			print "$code:\n";
-			print "\t1d avg: => $rolling_window->{'1d'}->{'avg'}\n";
-			print "\t1d min: => $rolling_window->{'1d'}->{'min'}\n";
-			print "\t1d max: => $rolling_window->{'1d'}->{'max'}\n";
-			print "\t1d vsh: => $rolling_window->{'1d'}->{'vsh'}\n";
-			print "\t1d vsa: => $rolling_window->{'1d'}->{'vsa'}\n";
-			print "\t1d cnt: => $rolling_window->{'1d'}->{'cnt'}\n";
-			print "\n";
-			print "\t7d avg: => $rolling_window->{'7d'}->{'avg'}\n";
-			print "\t7d min: => $rolling_window->{'7d'}->{'min'}\n";
-			print "\t7d max: => $rolling_window->{'7d'}->{'max'}\n";
-			print "\t7d vsh: => $rolling_window->{'7d'}->{'vsh'}\n";
-			print "\t7d vsa: => $rolling_window->{'7d'}->{'vsa'}\n";
-			print "\t7d cnt: => $rolling_window->{'7d'}->{'cnt'}\n";
-			print "\n";
-			print "\t30d avg: => $rolling_window->{'30d'}->{'avg'}\n";
-			print "\t30d min: => $rolling_window->{'30d'}->{'min'}\n";
-			print "\t30d max: => $rolling_window->{'30d'}->{'max'}\n";
-			print "\t30d vsh: => $rolling_window->{'30d'}->{'vsh'}\n";
-			print "\t30d vsa: => $rolling_window->{'30d'}->{'vsa'}\n";
-			print "\t30d cnt: => $rolling_window->{'30d'}->{'cnt'}\n";
+	
+			foreach $range (@interval) {
+				foreach $type (@stat_type) {
+					print "\t$range $type: => $rolling_window->{$range}->{$type}\n";
+				}	
+				print "\n";
+			}
 		} 
 	}
 }
