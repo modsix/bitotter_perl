@@ -35,13 +35,13 @@
 # Copyright (c) 2012, 2013 bitotter.com <modsix@gmail.com> 0xD655A630A13E8C69
 
 BitOTTer Perl Tools: 
-BitOTTer Market Data Tool for MPEx (bitotter_market_depth.pl) 
-	-- v0.01 alpha, works ok so far during testing.  Use with caution.
+BitOTTer IRC Bot for MPEx (bitotter_bot.pl) 
+	-- v0.0.2 alpha, works ok so far during testing.  Use with caution.
 	-- Will connect to IRC and allow botcontroller to issue DEPTH|VWAP commands to mpexbot 
 	-- Parsed output prints to terminal window where script is launched (STDOUT).
-BitOTTer Depth Tool for MPEx (bitotter_depth.pl) -- v0.03 beta
-BitOTTer VWAP Tool for MPEx [Volume Weighted Average Price] (bitotter_vwap.pl) -- v0.03 beta
-BitOTTer (bitotter.pl) MPEx Trade Tool -- v0.02 beta
+BitOTTer Depth Tool for MPEx (bitotter_depth.pl) -- v0.0.3 beta
+BitOTTer VWAP Tool for MPEx [Volume Weighted Average Price] (bitotter_vwap.pl) -- v0.0.3 beta
+BitOTTer (bitotter.pl) MPEx Trade Tool -- v0.0.2 beta
 
 ####################################################
 REQUIRED LIBS per each of BitOTTer Perl Tools:  
@@ -66,7 +66,7 @@ LWP::Simple -->
 JSON --> 
 	http://cpansearch.perl.org/src/MAKAMAKA/JSON-2.53/lib/JSON.pm
 
-bitotter_market_data.pl
+bitotter_bot.pl
 LWP::UserAgent --> 
 	http://cpansearch.perl.org/src/GAAS/libwww-perl-6.04/lib/LWP/UserAgent.pm
 LWP::Simple --> 
@@ -164,7 +164,7 @@ DECRYPTED ORDER FROM MPEx:
 -----END PGP SIGNED MESSAGE-----
 
 ####################################################
-BitOTTer Depth Tool for MPEx (bitotter_depth.pl) v0.02 beta
+BitOTTer Depth Tool for MPEx (bitotter_depth.pl) v0.0.2 beta
 This tool will display bid/ask depth for all MPSICs or 
 per MPSIC input by the user. 
 
@@ -248,7 +248,7 @@ B => Price: 544 Volume: 1000
 ...
 
 ####################################################
-BitOTTer VWAP Tool for MPEx [Volume Weighted Average Price] (bitotter_vwap.pl) v0.03
+BitOTTer VWAP Tool for MPEx [Volume Weighted Average Price] (bitotter_vwap.pl) v0.0.3 beta
 This tool will display the rolling VWAP per MPSIC in 1/7/30 day format 
 from pastebin URL via mpexbot.
 
@@ -281,7 +281,7 @@ S.MPOE:
 
 ####################################################
 
-BitOTTer Market Depth IRC Tool (bitotter_market_data.pl) v0.01 alpha
+BitOTTer IRC Bot for MPEx (bitotter_bot.pl) v0.0.2 alpha
 This tool will connect to IRC and issue DEPTH or VWAP to mpexbot via
 private message.  The market data will be parsed and output to std-out.
 
@@ -299,7 +299,7 @@ Private message commands directly to BitOTTer<###> - where <###> is the random b
 Output to StdOut:
 
 ~$ ./bitotter_market_depth.pl 
-..::[ BitOTTer VWAP Tool for MPEx: ^OIX ]::..
+..::[ BitOTTer Bot VWAP Data for MPEx: ^OIX ]::..
 ^OIX:
         1d avg: => 
         1d min: => 
@@ -322,7 +322,7 @@ Output to StdOut:
         30d vsa: => 
         30d cnt: => 
 
-..::[ BitOTTer Market Depth for MPEx: O.BTCUSD.C450T ]::..
+..::[ BitOTTer Bot Market Depth for MPEx: O.BTCUSD.C450T ]::..
 S => Price: 22000000    Volume: 231
 S => Price: 18101976    Volume: 54
 B => Price: 11870148    Volume: 1000

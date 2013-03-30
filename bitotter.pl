@@ -34,7 +34,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-# BitOTTer for MPEx [Perl Version for UNIX] (bitotter.pl) v0.02
+# BitOTTer for MPEx [Perl Version for UNIX] (bitotter.pl) v0.0.2
 # Copyright (c) 2012, 2013 BitOTTer.com <modsix@gmail.com> 0xD655A630A13E8C69 
 
 use GPG;

@@ -34,7 +34,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-# BitOTTer Market VWAP Tool for MPEx (bitotter_vwap.pl) v0.03 beta
+# BitOTTer Market VWAP Tool for MPEx (bitotter_vwap.pl) v0.0.3 beta
 # Copyright (c) 2012, 2013 bitotter.com <modsix@gmail.com> 0xD655A630A13E8C69 
 
 ### New, revised version of the original bitotter_vwap.pl: 

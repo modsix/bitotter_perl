@@ -34,7 +34,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-# BitOTTer IRC Bot for MPEx (bitotter_bot.pl)
+# BitOTTer IRC Bot for MPEx (bitotter_bot.pl) v0.0.2 alpha
 # Copyright (c) 2012, 2013 bitotter.com <modsix@gmail.com> 0xD655A630A13E8C69 
 
 use JSON;
@@ -152,7 +152,7 @@ sub displayDepth {
 	my $json_depth_obj = new JSON;
 	my $mpsic = $json_depth_obj->allow_unknown->relaxed->decode($json_depth_data);
 
-	print "..::[ BitOTTer Market Depth for MPEx: $req_mpsic ]::..\n";
+	print "..::[ BitOTTer Bot Market Depth for MPEx: $req_mpsic ]::..\n";
 	while (my ($code,$trade) = each %$mpsic) {
 		if($req_mpsic eq "ALL") { 
 			print "MPSIC => $code:\n";
@@ -206,7 +206,7 @@ sub displayVWAP {
 	my @interval = ('1d', '7d', '30d');
 	my @stat_type = ('avg', 'min', 'max', 'vsh', 'vsa', 'cnt');
 
-	print "..::[ BitOTTer VWAP Tool for MPEx: $req_mpsic ]::..\n";
+	print "..::[ BitOTTer Bot VWAP Data for MPEx: $req_mpsic ]::..\n";
 	while (my ($code, $rolling_window) = each %$mpsic) {
 		if($code eq $req_mpsic) {
 			print "$code:\n";
