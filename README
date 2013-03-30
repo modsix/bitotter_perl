@@ -298,7 +298,7 @@ Private message commands directly to BitOTTer<###> - where <###> is the random b
 
 Output to StdOut:
 
-~$ ./bitotter_market_depth.pl 
+~$ ./bitotter_bot.pl 
 ..::[ BitOTTer Bot VWAP Data for MPEx: ^OIX ]::..
 ^OIX:
         1d avg: => 
