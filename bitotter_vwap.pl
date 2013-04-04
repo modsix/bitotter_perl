@@ -84,7 +84,7 @@ sub getVWAP {
 	my $html = "";
 
 	if(($ARGV[1] =~ m/usetor/i) or ($ARGV[2] =~ m/usetor/i)) {
-		print "TOR ENABLED - Connecting to pastebin via Tor Socket...\n";
+		print "TOR ENABLED - Connecting via Tor Socket...\n";
 		my $ua = LWP::UserAgent->new(agent => q{Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; YPC 3.2.0; .NET CLR 1.1.4322)});
 		$ua->proxy([qw/ http https /] => 'socks://localhost:9150'); # Tor proxy - 9150 default nao !?
 		$ua->cookie_jar({});
@@ -92,7 +92,7 @@ sub getVWAP {
 		if($use_pastebin eq "TRUE") { $response = $ua->get($pastebin_raw_url); } else { $response = $ua->get($mpex_vwap_feed); }
 		$html = $response->content;
 	} elsif(($ARGV[1] eq "" or $ARGV[1] =~ m/no-tor/i) or ($ARGV[2] eq "" or $ARGV[2] =~ m/no-tor/i)) {
-		print "TOR DISABLED! Naked connection to pastebin in progress...\n";
+		print "TOR DISABLED! Naked connection in progress...\n";
 		my $ua = LWP::UserAgent->new(agent => q{Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; YPC 3.2.0; .NET CLR 1.1.4322)});
 		$ua->timeout(30);
 		my $response;
