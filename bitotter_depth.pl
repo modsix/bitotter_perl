@@ -59,9 +59,9 @@ my $mpex_depth_feed = "http://mpex.co/mpex-mktdepth.php";
 my $pastebin_raw_url = "";
 my $use_pastebin = "FALSE";
 
-if($ARGV[0] =~ m/^help$|^h(\w+)$/i) { 
+if(($ARGV[0] =~ m/^help$|^h(\w+)$/i) or ($ARGV[0] eq "") or ($ARGV[0] =~ m/pastebin/)) { 
 	usage();
-} elsif(($ARGV[1] =~ m/http\:\/\/pastebin\.com\/raw\.php\?i\=(.*)/) or ($ARGV[1] =~ m/http\:\/\/pastebin\.com\/(.*)/) and $ARGV[1] ne "") {
+} elsif(($ARGV[1] =~ m/http\:\/\/pastebin\.com\/raw\.php\?i\=(.*)/) or ($ARGV[1] =~ m/http\:\/\/pastebin\.com\/(.*)/) and ($ARGV[1] ne "")) {
 	$pastebin_key = $+;	
 	$pastebin_raw_url = "http://pastebin.com/raw.php?i=" . $pastebin_key;
 	$use_pastebin = "TRUE";
