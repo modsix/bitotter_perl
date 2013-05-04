@@ -223,7 +223,7 @@ sub parseResponse {
 		return $pgp;
 	} else {
 		print "BitOTTer Error: parseResponse() => PGP MESSAGE REGEX FAILURE!\n";
-		print "Parsed response messaeg from MPEx did not match a PGP Message.\n";
+		print "Parsed response message from MPEx did not match a PGP Message.\n";
 		print "Check $TMP_DIR/mpex_reply.txt output file and attempt to decrypt $TMP_DIR/mpex_reply.txt by hand.\n";
 	}
 
