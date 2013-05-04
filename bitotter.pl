@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -w
 
 #
 # Copyright (c) 2012, 2013
@@ -34,7 +34,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-# BitOTTer for MPEx [Perl Version for UNIX] (bitotter.pl) v0.0.2
+# BitOTTer for MPEx [Perl Version for UNIX] (bitotter.pl) v0.0.3
 # Copyright (c) 2012, 2013 BitOTTer.com <modsix@gmail.com> 0xD655A630A13E8C69 
 
 use GPG;
@@ -52,41 +52,50 @@ my $END_PGP_MSG = "-----END PGP MESSAGE-----";
 my $GPG = new GPG(homedir => $PATH_TO_GPG_HOME);
 die $GPG->error() if $GPG->error();
 
-print "..::[ BitOTTer (for UNIX) ]::..\n";   
-if(!$ARGV[0] && !$ARGV[1]) {
-	print "Usage: ./bitotter.pl \"MPEx COMMAND\" [usetor] \n";
-        print "   ex: ./bitotter.pl \"STAT\" [usetor] \n";
-	print "Review this FAQ for all commands you can issue: http://mpex.co/faq.html\n";
-} else {
+sub BitOTTerMain() {
+	print "..::[ BitOTTer (for UNIX) ]::..\n";   
+	if(!$ARGV[0] && !$ARGV[1]) {
+		print "Usage: ./bitotter.pl \"MPEx COMMAND\" [usetor] \n";
+		print "   ex: ./bitotter.pl \"STAT\" [usetor] \n";
+		print "Review this FAQ for all commands you can issue: http://mpex.co/faq.html\n";
+	} else {
+		checkForMPExKey();
+		my $PGP_PUB_KEY_ID = getGPGUserID();
+		my $PASSPHRASE = getPassphrase();
 
-	checkForMPExKey();
-	my $PGP_PUB_KEY_ID = getGPGUserID();
-	my $PASSPHRASE = getPassphrase();
+		my $MPEX_CMD = $ARGV[0]; # STAT|BUY|SELL|CANCEL etc.
 
-	my $MPEX_CMD = $ARGV[0]; # STAT|BUY|SELL|CANCEL etc.
+		## Clearsign the cmd to MPEx
+		$clearsigned_mpex_cmd = $GPG->clearsign($PGP_PUB_KEY_ID, $PASSPHRASE, $MPEX_CMD) or die "$! BitOTTer Error: Problem clear-signing MPEx Cmd! Double check PGP Keys and Passphrase!\n";
 
-	## Clearsign the cmd to MPEx
-	$clearsigned_mpex_cmd = $GPG->clearsign($PGP_PUB_KEY_ID, $PASSPHRASE, $MPEX_CMD) or die "$! Problem Clearsigning MPEx cmd! Double check GPG keys and Passphrase!\n";
+		## Encrypt the cmd to MPEx
+		$encrypted_mpex_cmd = $GPG->encrypt($clearsigned_mpex_cmd, $MPEX_PGP_KEY_ID) or die "$! BitOTTer Error: Problem encrypting cmd to send to MPEx! Did you sign the MPEx Public Key?\n"; 
 
-	## Encrypt the cmd to MPEx
-	$encrypted_mpex_cmd = $GPG->encrypt($clearsigned_mpex_cmd, $MPEX_PGP_KEY_ID) or die "$! Problem encrypting cmd to send to MPEx! Did you sign the MPEx public key?\n"; 
+		## Send command to MPEx
+		my $pgp_response = sendToMPEx();
+		
+		## Parse Response from MPEx
+		if($pgp_response) { 
+			$PGP_REPLY = parseResponse($pgp_response);
+		} else {
+			print "BitOTTer Error: parseRepsonse() => Check $TMP_DIR/mpex_reply.txt and attempt to decrypt by hand if a PGP message is found!\n";
+		}
 
-	## Send command to MPEx
-	sendToMPEx();
-	
-	## Parse Response from MPEx
-	my $PGP_REPLY = parseResponse();
-
-	## Decrypt the reply from MPEx
-	$decrypted_order = $GPG->decrypt($PASSPHRASE, $PGP_REPLY) or die "$! Problem decrypting reply from MPEx!! Bad Passphrase? Try to decrypt $TMP_DIR/mpex_reply.txt by hand.\n";
-	if($decrypted_order) { 
-		print "DECRYPTED ORDER FROM MPEx:\n$decrypted_order\n";
+		## Decrypt the reply from MPEx
+		my $decrypted_order = $GPG->decrypt($PASSPHRASE, $PGP_REPLY) or die "$! Problem decrypting reply from MPEx!! Bad Passphrase? Try to decrypt $TMP_DIR/mpex_reply.txt by hand.\n";
+		if($decrypted_order) { 
+			print "DECRYPTED ORDER FROM MPEx:\n$decrypted_order\n";
+		} else {
+			print "BitOTTer Error: Problem decrypting reply from MPEx! Please check $TMP_DIR/mpex_reply.txt and decrypt by hand if possible.\n";
+		}
 	}
+	
+	exit;
 }
 
 sub checkForMPExKey {
 	## First check to see that the MPEx key is imported already into the users keyring
-	my @keyring = $GPG->list_keys() or die "$! Couldn't get the list of GPG keys on local keyring! Exiting!\n";
+	my @keyring = $GPG->list_keys() or die "$! BitOTTer Error: checkForMPExKey() => Couldn't get the list of GPG keys on local keyring! Exiting!\n";
 	my $mk_tmp = $keyring[0];
 	my @keyring_keys = @$mk_tmp;
 	my $key_id = "";
@@ -103,7 +112,8 @@ sub checkForMPExKey {
 	}
 
 	if(!$mpex_key_found) { 
-		print "Error: MPEx Public Key: $MPEX_PGP_KEY_ID Not Found on Users Keyring. Please locate on gpg.mit.edu, import and try again.\n";
+		print "BitOTTer Error: checkForMPExKey() => MPEx Public Key: $MPEX_PGP_KEY_ID Not Found on Users Keyring.\n"; 
+		print "Please locate on gpg.mit.edu, import and try again.\n";
 		print "     : for more info check here: http://mpex.co/faq.html#6\n";
 		print "     :                   & here: http://mpex.co/faq.html#8\n";
 		exit;
@@ -118,7 +128,7 @@ sub getGPGUserID {
 	ReadMode(0); # normal mode
 
 	## List off the keys
-	my @lk = $GPG->list_keys() or die "$! Couldn't get list of GPG keys on local keyring! Exiting!\n";
+	my @lk = $GPG->list_keys() or die "$! BitOTTer Error: getGPGUserID() => Couldn't get list of GPG keys on local keyring! Exiting!\n";
 	my $gpgkeys = $lk[0];
 	my @listkeys = @$gpgkeys;
 	my $uid = "";
@@ -184,38 +194,40 @@ sub sendToMPEx {
 		$response = $ua->post($URL, {'msg' => $encrypted_mpex_cmd});
 		$web_content = $response->decoded_content();	
 	} else {
-		print "Tor disabled - naked connection to MPEx in progress ...\n";
+		print "Tor disabled - Naked connection to MPEx in progress...\n";
 		my $user_agent = LWP::UserAgent->new();
 		$response = $user_agent->post($URL, {'msg' => $encrypted_mpex_cmd});
 		$web_content  = $response->decoded_content();
 	}
 
 	## Write out the web-content for safe keeping - a person could decrypt by hand.
-	open RES, ">$TMP_DIR/mpex_reply.txt" or die "$! Couldn't open the $TMP_DIR/mpex_reply.txt file for writing! Exiting!  Check $TMP_DIR permissions.\n";
+	open RES, ">$TMP_DIR/mpex_reply.txt" or die "$! BitOTTer Error: sendToMPEx() => Couldn't open the $TMP_DIR/mpex_reply.txt file for writing! Exiting! Check $TMP_DIR permissions.\n";
 	print RES $web_content;	
 	close RES;
+	return $web_content;
 }
 
 sub parseResponse { 
 	## Open the saved web-content reply file from MPEx for parsing out the PGP message.
 	## Then check to make sure what we grabbed was indeed a PGP message.
-	open PGP_RES, "<$TMP_DIR/mpex_reply.txt" or die "$! Couldn't open the $TMP_DIR/mpex_reply.txt file for reading!  Exiting! Locate file and try to decrypt by hand.\n";
-	my $pgp = "";
-	while(<PGP_RES>) { $pgp .= $_; }
-	close PGP_RES;
 
-	if(!$pgp) { 
-		print "Error: Response wasn't correctly read from $TMP_DIR/mpex_reply.txt! Exiting! Check output file - try to decrypt by hand.\n";
-		exit;
-	} elsif($pgp =~ m/$BEGIN_PGP_MSG/) {
+	my $pgp = $_[0]; # Get the pgp_response from the array of parameters.
+
+	## If we don't match a $pgp message through the function parameter, attempt to open the $TMP_DIR/mpex_reply.txt file as a last resort to grab the PGP messagen.
+	if($pgp !~ m/$BEGIN_PGP_MSG/) {
+		open PGP_RES, "<$TMP_DIR/mpex_reply.txt" or die "$! BitOTTer Error: parseResponse() => Couldn't open the $TMP_DIR/mpex_reply.txt file for reading! Exiting! Attempt to decrypt $TMP_DIR/mpex_reply.txt by hand.\n";
+		while(<PGP_RES>) { $pgp .= $_; }
+		close PGP_RES;
+		if($pgp =~ m/$BEGIN_PGP_MSG/) { return $pgp; } 
+	} elsif($pgp =~ m/$BEGIN_PGP_MSG/) { ## If we do match a PGP message, go ahead an return it for decryption
 		return $pgp;
 	} else {
-		print "Error: PGP MESSAGE REGEX FAILURE!\n";
-		print "Parsed response messaeg from MPEx was not a PGP Message.\n";
-		print "Check $TMP_DIR/mpex_reply.txt output file.\n";
-		exit;
+		print "BitOTTer Error: parseResponse() => PGP MESSAGE REGEX FAILURE!\n";
+		print "Parsed response messaeg from MPEx did not match a PGP Message.\n";
+		print "Check $TMP_DIR/mpex_reply.txt output file and attempt to decrypt $TMP_DIR/mpex_reply.txt by hand.\n";
 	}
 
-	print "PGP MESSAGE NOT FOUND IN REPLY FROM MPEX! Check $TMP_DIR/mpex_reply.txt file. Exiting!\n";	
 	exit; 
 }
+
+BitOTTerMain();
