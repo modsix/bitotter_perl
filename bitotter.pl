@@ -105,7 +105,7 @@ sub checkForMPExKey {
 		$key_id = $_->{'key_id'};
 		if(!$key_id) {
 			next; # some entries could be null.
-		} elsif($key_id =~ m/$MPEX_PGP_KEY_ID/i) { 
+		} elsif($key_id =~ m/$MPEX_PGP_KEY_ID/) { 
 			$mpex_key_found = "1";
 			print "MPEx Key Found: $key_id\n";	
 		}
@@ -138,7 +138,7 @@ sub getGPGUserID {
 		$uid = $_->{'user_id'};
 		if(!$uid) { 
 			next; # some entries could be null
-		} elsif($uid =~ m/$search_key/) { 
+		} elsif($uid =~ m/$search_key/i) { 
 			print "Public Key Found: $_->{'key_id'} for user: $uid\n";
 			$PGP_PUB_KEY_ID	= $_->{'key_id'};
 		}
