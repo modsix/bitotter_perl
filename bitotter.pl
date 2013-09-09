@@ -105,7 +105,7 @@ sub checkForMPExKey {
 		$key_id = $_->{'key_id'};
 		if(!$key_id) {
 			next; # some entries could be null.
-		} elsif($key_id =~ m/$MPEX_PGP_KEY_ID/) { 
+		} elsif($key_id =~ m/$MPEX_PGP_KEY_ID/i) { 
 			$mpex_key_found = "1";
 			print "MPEx Key Found: $key_id\n";	
 		}
