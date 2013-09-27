@@ -46,7 +46,7 @@ use CGI;
 my $TMP_DIR = "/tmp";
 my $PATH_TO_GPG_HOME = "~/.gnupg/";
 my $URL = "http://mpex.co";
-my $MPEX_PGP_KEY_ID = "14460196CFE0F3E1"; # as of 20130310
+my $MPEX_PGP_KEY_ID = "2EE93869A57D509A"; # as of 20130927
 my $BEGIN_PGP_MSG = "-----BEGIN PGP MESSAGE-----";
 my $END_PGP_MSG = "-----END PGP MESSAGE-----";
 my $GPG = new GPG(homedir => $PATH_TO_GPG_HOME);
