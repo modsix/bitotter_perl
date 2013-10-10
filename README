@@ -41,7 +41,7 @@ BitOTTer IRC Bot for MPEx (bitotter_bot.pl)
 	-- Parsed output prints to terminal window where script is launched (STDOUT).
 BitOTTer Depth Tool for MPEx (bitotter_depth.pl) -- v0.0.3 beta
 BitOTTer VWAP Tool for MPEx [Volume Weighted Average Price] (bitotter_vwap.pl) -- v0.0.3 beta
-BitOTTer MPEx Trade Tool (bitotter.pl) -- v0.0.3 beta
+BitOTTer MPEx Trade Tool (bitotter.pl) -- v0.0.4 beta
 
 ####################################################
 REQUIRED LIBS per each of BitOTTer Perl Tools:  
