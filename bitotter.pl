@@ -34,7 +34,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-# BitOTTer for MPEx [Perl Version for UNIX] (bitotter.pl) v0.0.3
+# BitOTTer for MPEx [Perl Version for UNIX] (bitotter.pl) v0.0.4
 # Copyright (c) 2012, 2013 BitOTTer.com <modsix@gmail.com> 0xD655A630A13E8C69 
 
 use GPG;
@@ -43,6 +43,7 @@ use Term::ReadKey;
 use CGI;
 
 ## Some Globals we need set: Make sure that $TMP_DIR and $PATH_TO_GPG_HOME are set correctly to your environment.
+my $TMP_FILE = createOutputFileTimestamp();
 my $TMP_DIR = "/tmp";
 my $PATH_TO_GPG_HOME = "~/.gnupg/";
 my $URL = "http://mpex.co";
@@ -78,15 +79,15 @@ sub BitOTTerMain() {
 		if($pgp_response) { 
 			$PGP_REPLY = parseResponse($pgp_response);
 		} else {
-			print "BitOTTer Error: parseRepsonse() => Check $TMP_DIR/mpex_reply.txt and attempt to decrypt by hand if a PGP message is found!\n";
+			print "BitOTTer Error: parseRepsonse() => Check $TMP_DIR/$TMP_FILE and attempt to decrypt by hand if a PGP message is found!\n";
 		}
 
 		## Decrypt the reply from MPEx
-		my $decrypted_order = $GPG->decrypt($PASSPHRASE, $PGP_REPLY) or die "$! Problem decrypting reply from MPEx!! Bad Passphrase? Try to decrypt $TMP_DIR/mpex_reply.txt by hand.\n";
+		my $decrypted_order = $GPG->decrypt($PASSPHRASE, $PGP_REPLY) or die "$! Problem decrypting reply from MPEx!! Bad Passphrase? Try to decrypt $TMP_DIR/$TMP_FILE by hand.\n";
 		if($decrypted_order) { 
 			print "DECRYPTED ORDER FROM MPEx:\n$decrypted_order\n";
 		} else {
-			print "BitOTTer Error: Problem decrypting reply from MPEx! Please check $TMP_DIR/mpex_reply.txt and decrypt by hand if possible.\n";
+			print "BitOTTer Error: Problem decrypting reply from MPEx! Please check $TMP_DIR/$TMP_FILE and decrypt by hand if possible.\n";
 		}
 	}
 	
@@ -201,7 +202,7 @@ sub sendToMPEx {
 	}
 
 	## Write out the web-content for safe keeping - a person could decrypt by hand.
-	open RES, ">$TMP_DIR/mpex_reply.txt" or die "$! BitOTTer Error: sendToMPEx() => Couldn't open the $TMP_DIR/mpex_reply.txt file for writing! Exiting! Check $TMP_DIR permissions.\n";
+	open RES, ">$TMP_DIR/$TMP_FILE" or die "$! BitOTTer Error: sendToMPEx() => Couldn't open the $TMP_DIR/$TMP_FILE file for writing! Exiting! Check $TMP_DIR permissions.\n";
 	print RES $web_content;	
 	close RES;
 	return $web_content;
@@ -213,9 +214,9 @@ sub parseResponse {
 
 	my $pgp = $_[0]; # Get the pgp_response from the array of parameters.
 
-	## If we don't match a $pgp message through the function parameter, attempt to open the $TMP_DIR/mpex_reply.txt file as a last resort to grab the PGP messagen.
+	## If we don't match a $pgp message through the function parameter, attempt to open the $TMP_DIR/$TMP_FILE as a last resort to grab the PGP messagen.
 	if($pgp !~ m/$BEGIN_PGP_MSG/) {
-		open PGP_RES, "<$TMP_DIR/mpex_reply.txt" or die "$! BitOTTer Error: parseResponse() => Couldn't open the $TMP_DIR/mpex_reply.txt file for reading! Exiting! Attempt to decrypt $TMP_DIR/mpex_reply.txt by hand.\n";
+		open PGP_RES, "<$TMP_DIR/$TMP_FILE" or die "$! BitOTTer Error: parseResponse() => Couldn't open the $TMP_DIR/$TMP_FILE file for reading! Exiting! Attempt to decrypt $TMP_DIR/$TMP_FILE by hand.\n";
 		while(<PGP_RES>) { $pgp .= $_; }
 		close PGP_RES;
 		if($pgp =~ m/$BEGIN_PGP_MSG/) { return $pgp; } 
@@ -224,10 +225,31 @@ sub parseResponse {
 	} else {
 		print "BitOTTer Error: parseResponse() => PGP MESSAGE REGEX FAILURE!\n";
 		print "Parsed response message from MPEx did not match a PGP Message.\n";
-		print "Check $TMP_DIR/mpex_reply.txt output file and attempt to decrypt $TMP_DIR/mpex_reply.txt by hand.\n";
+		print "Check $TMP_DIR/$TMP_FILE output file and attempt to decrypt $TMP_DIR/$TMP_FILE by hand.\n";
 	}
 
 	exit; 
 }
+
+sub createOutputFileTimestamp {
+	@DMY = (localtime)[3..5]; # Grab 3,4,5 for D/M/Y values from localtime
+
+	my $date = "";
+	my $month = "";
+	my $YYYYMMDD = "";
+	my $outputFilename = "";
+
+	if($DMY[0] < 10) { $date = "0" . $DMY[0]; } else { $date = $DMY[0]; }
+	$DMY[1] += 1;  # Month values start at 0, increment by 1 for actual month numerical value.
+	if($DMY[1] < 10) { $month = "0" . $DMY[1]; } else { $month = $DMY[1]; }
+
+	$YYYYMMDD .= $DMY[2] + 1900; # Required for four digit year: http://perldoc.perl.org/functions/localtime.html
+	$YYYYMMDD .= $month;
+	$YYYYMMDD .= $date;
+	
+	## Append the current date in YYYYMMDD format, in additionally add the current UNIXTIME (time) to output filename.
+	$outputFileName = "mpex_reply_" . $YYYYMMDD . "_" . time . ".txt";
+	return $outputFileName;
+} 
 
 BitOTTerMain();

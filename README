@@ -142,7 +142,14 @@ This tool makes some assumptions about the location of your local .gnupg
 directory, and a tmp directory that is needed.  Please reivew these
 variable settings in the bitotter.pl script:
 $PATH_TO_GPG_HOME = "~/.gnupg";  # This is the default
+
+MPEx Receipts will be stored by default in this directory - Be advised that
+every transaction will have a different output file.  This will give the user
+a historical log of all transactions with MPEx:
 $TMP_DIR = "/tmp";               # This is the default
+
+MPEx Receipt files (stored in $TMP_DIR will have the following nomenclature:
+mpex_reply_YYYYMMDD_UNIXTIME.txt
 
 Please ensure that he MPEx public PGP key is imported to your GPG keyring 
 before running bitotter.pl.  If you do not have the MPEx key imported 
