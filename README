@@ -148,7 +148,7 @@ every transaction will have a different output file.  This will give the user
 a historical log of all transactions with MPEx:
 $TMP_DIR = "/tmp";               # This is the default
 
-MPEx Receipt files (stored in $TMP_DIR will have the following nomenclature:
+MPEx Receipt files (stored in $TMP_DIR) will have the following nomenclature:
 mpex_reply_YYYYMMDD_UNIXTIME.txt
 
 Please ensure that he MPEx public PGP key is imported to your GPG keyring 
