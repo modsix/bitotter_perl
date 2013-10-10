@@ -43,7 +43,7 @@ use Term::ReadKey;
 use CGI;
 
 ## Some Globals we need set: Make sure that $TMP_DIR and $PATH_TO_GPG_HOME are set correctly to your environment.
-my $TMP_FILE = createOutputFileTimestamp();
+my $TMP_FILE = createOutputFileName();
 my $TMP_DIR = "/tmp";
 my $PATH_TO_GPG_HOME = "~/.gnupg/";
 my $URL = "http://mpex.co";
@@ -231,7 +231,7 @@ sub parseResponse {
 	exit; 
 }
 
-sub createOutputFileTimestamp {
+sub createOutputFileName {
 	@DMY = (localtime)[3..5]; # Grab 3,4,5 for D/M/Y values from localtime
 
 	my $date = "";
