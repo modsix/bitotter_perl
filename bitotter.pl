@@ -187,7 +187,7 @@ sub sendToMPEx {
 	my $response;
 
 	## Check to see if we should attempt to connect to MPEx via Tor Socket on port 9150
-	if($ARGV[1] eq "usetor") {
+	if(defined $ARGV[1] && $ARGV[1] eq "usetor") {
 		print "TOR ENABLED - Connecting to MPEx via Tor Socket...\n";
 		my $ua = LWP::UserAgent->new(agent => q{Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; YPC 3.2.0; .NET CLR 1.1.4322)},);
 		$ua->proxy([qw/ http https /] => 'socks://localhost:9150'); # Tor proxy - 9150 new default port number !?
