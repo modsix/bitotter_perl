@@ -86,19 +86,22 @@ GPG		--> http://search.cpan.org/~miles/GPG-0.06/GPG.pm
 
 ATTENTION -- The GPG perl module will require a change before it will work
 properly with bitotter.pl.  As you can see below from the unified diff, one 
-simply has to remove the --quiet line from the module.
-Run a `find / -name "GPG.pm"` to find the file if needed.
+simply has to add the --quiet line to the module.
+Run a `find / -name "GPG.pm"` to find the file if needed. 
+[ It's possible that there will be several turned up after a search, you can apply the fix
+to all, but you're probably looking for one in this or a similar path: 
+/usr/local/share/perl/ ]  
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-[mod6@localhost:~]% cat GPG.pm.patch
---- GPG.pm      2012-07-30 12:48:22.839132701 -0700
-+++ GPG.pm.orig 2012-07-30 12:46:56.674621512 -0700
-@@ -25,7 +25,6 @@
+root@localhost:/usr/local/share/perl/5.14.2# diff -u GPG.orig GPG.pm
+--- GPG.orig	2013-10-30 01:51:43.532291282 -0500
++++ GPG.pm	2013-10-30 01:47:06.552295771 -0500
+@@ -25,6 +25,7 @@
         $self->{'COMMAND'} .= " --batch";
         $self->{'COMMAND'} .= " --no-comment";
         $self->{'COMMAND'} .= " --no-version";
--       $self->{'COMMAND'} .= " --quiet";
++       $self->{'COMMAND'} .= " --quiet";
         $self->{'COMMAND'} .= ' '; # so i dont forget the spaces later :-)
-
+ 
        if ($self->{'debug'}) {
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
