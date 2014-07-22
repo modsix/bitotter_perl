@@ -1,7 +1,7 @@
 #!/usr/bin/perl -w
 
 #
-# Copyright (c) 2012, 2013
+# Copyright (c) 2012, 2013, 2014
 # BITOTTER (http://www.bitotter.com) All rights reserved.
 #
 #
@@ -34,8 +34,8 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-# BitOTTer for MPEx [Perl Version for UNIX] (bitotter.pl) v0.0.4
-# Copyright (c) 2012, 2013 BitOTTer.com <modsix@gmail.com> 0xD655A630A13E8C69 
+# BitOTTer for MPEx [Perl Version for UNIX] (bitotter.pl) v0.0.5
+# Copyright (c) 2012, 2013, 2014 BitOTTer.com <modsix@gmail.com> 0xD655A630A13E8C69 
 
 use GPG;
 use LWP::UserAgent;
@@ -47,7 +47,7 @@ my $TMP_FILE = createOutputFileName();
 my $TMP_DIR = "/tmp";
 my $PATH_TO_GPG_HOME = "~/.gnupg/";
 my $URL = "http://mpex.co";
-my $MPEX_PGP_KEY_ID = "2EE93869A57D509A"; # as of 20130927
+my $MPEX_PGP_KEY_ID = "EE2BDEF602DD2D91"; # as of 20140720
 my $BEGIN_PGP_MSG = "-----BEGIN PGP MESSAGE-----";
 my $END_PGP_MSG = "-----END PGP MESSAGE-----";
 my $GPG = new GPG(homedir => $PATH_TO_GPG_HOME);
