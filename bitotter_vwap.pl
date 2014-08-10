@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 #
-# Copyright (c) 2012, 2013
+# Copyright (c) 2012, 2013, 2014
 # BITOTTER (http://www.bitotter.com) All rights reserved.
 #
 #
@@ -35,7 +35,7 @@
 #
 
 # BitOTTer Market VWAP Tool for MPEx (bitotter_vwap.pl) v0.0.3 beta
-# Copyright (c) 2012, 2013 bitotter.com <modsix@gmail.com> 0xD655A630A13E8C69 
+# Copyright (c) 2012, 2013, 2014 bitotter.com <modsix@gmail.com> 0x721705A8B71EADAF
 
 ### New, revised version of the original bitotter_vwap.pl: 
 ### This version takes a pastebin URL of the market vwap JSON data as a parameter.  
@@ -58,7 +58,7 @@ use LWP::UserAgent;
 use LWP::Simple qw(get);
 
 my $TMP_DIR = "/tmp";
-my $mpex_vwap_feed = "http://mpex.co/mpex-vwap.php";
+my $mpex_vwap_feed = "http://mpex.bz/mpex-vwap.php";
 my $pastebin_raw_url = "";
 my $use_pastebin = "FALSE";
 

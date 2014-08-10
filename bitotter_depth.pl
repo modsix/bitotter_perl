@@ -35,7 +35,7 @@
 #
 
 # BitOTTer Market Depth Tool for MPEx (bitotter_depth.pl) v0.0.3 beta
-# Copyright (c) 2012, 2013 bitotter.com <modsix@gmail.com> 0xD655A630A13E8C69 
+# Copyright (c) 2012, 2013, 2014 bitotter.com <modsix@gmail.com> 0x721705A8B71EADAF
 
 ### New, revised version of the original bitotter_depth.pl: 
 ### This version takes a pastebin URL of the market depth JSON data as a parameter.  
@@ -55,7 +55,7 @@ use LWP::UserAgent;
 use LWP::Simple qw(get);
 
 my $TMP_DIR = "/tmp";
-my $mpex_depth_feed = "http://mpex.co/mpex-mktdepth.php";
+my $mpex_depth_feed = "http://mpex.bz/mpex-mktdepth.php";
 my $pastebin_raw_url = "";
 my $use_pastebin = "FALSE";
 

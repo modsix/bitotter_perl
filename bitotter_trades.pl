@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 #
-# Copyright (c) 2012
+# Copyright (c) 2012, 2013, 2014
 # BITOTTER (http://www.bitotter.com) All rights reserved.
 #
 #
@@ -35,13 +35,13 @@
 #
 
 # BitOTTer Trade History RSS Tool for MPEx (bitotter_trades.pl)
-# Copyright (c) 2012, 2013 bitotter.com <modsix@gmail.com> 0xD655A630A13E8C69
+# Copyright (c) 2012, 2013, 2014 bitotter.com <modsix@gmail.com> 0x721705A8B71EADAF
 
 use LWP::UserAgent; 
 use LWP::Simple qw(get);
 use XML::RSS;
 
-my $url = "http://mpex.co/mpex-rss.php";
+my $url = "http://mpex.bz/mpex-rss.php";
 my $rss = XML::RSS->new();
 my $rss_feed;
 my $mpex_trades;

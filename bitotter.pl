@@ -35,7 +35,7 @@
 #
 
 # BitOTTer for MPEx [Perl Version for UNIX] (bitotter.pl) v0.0.5
-# Copyright (c) 2012, 2013, 2014 BitOTTer.com <modsix@gmail.com> 0xD655A630A13E8C69 
+# Copyright (c) 2012, 2013, 2014 BitOTTer.com <modsix@gmail.com> 0x721705A8B71EADAF
 
 use GPG;
 use LWP::UserAgent;
@@ -46,7 +46,7 @@ use CGI;
 my $TMP_FILE = createOutputFileName();
 my $TMP_DIR = "/tmp";
 my $PATH_TO_GPG_HOME = "~/.gnupg/";
-my $URL = "http://mpex.co";
+my $URL = "http://mpex.bz";
 my $MPEX_PGP_KEY_ID = "EE2BDEF602DD2D91"; # as of 20140720
 my $BEGIN_PGP_MSG = "-----BEGIN PGP MESSAGE-----";
 my $END_PGP_MSG = "-----END PGP MESSAGE-----";
