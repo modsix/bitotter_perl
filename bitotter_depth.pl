@@ -55,7 +55,7 @@ use LWP::UserAgent;
 use LWP::Simple qw(get);
 
 my $TMP_DIR = "/tmp";
-my $mpex_depth_feed = "http://mpex.bz/mpex-mktdepth.php";
+my $mpex_depth_feed = "http://mpex.co/mpex-mktdepth.php";
 my $pastebin_raw_url = "";
 my $use_pastebin = "FALSE";
 

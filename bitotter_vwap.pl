@@ -58,7 +58,7 @@ use LWP::UserAgent;
 use LWP::Simple qw(get);
 
 my $TMP_DIR = "/tmp";
-my $mpex_vwap_feed = "http://mpex.bz/mpex-vwap.php";
+my $mpex_vwap_feed = "http://mpex.co/mpex-vwap.php";
 my $pastebin_raw_url = "";
 my $use_pastebin = "FALSE";
 
